@@ -1,20 +1,24 @@
 import * as SocketIOClient from 'socket.io-client';
 import { NetworkController, Message } from '../engine/Network';
 import { World } from '../engine/World';
+import { ClientWorld } from './ClientWorld';
 //const io = require('socket.io');
 
 
-export abstract class WorldMessage implements Message {
+export interface ClientMessage extends Message {
+  apply(data: any, world: ClientWorld): void;
+
+}
+
+export abstract class WorldMessage implements ClientMessage {
   data: any;
   type: string;
 
-
-  apply(data: any, controller: NetworkController): void {
-    this.applyToWorld(data, controller.world);
+  constructor(data?: any) {
+    this.data = data;
   }
 
-  abstract applyToWorld(data: any, world: World): void;
-
+  abstract apply(data: any, world: ClientWorld): void;
 }
 
 export namespace WorldMessages {
@@ -23,14 +27,14 @@ export namespace WorldMessages {
     static TYPE: string = WORLD_MESSAGE_PREFIX + 'AE';
     type = AddEntity.TYPE;
 
-    applyToWorld(data: any, world: World): void {
+    apply(data: any, world: ClientWorld): void {
       world.addEntity(world.entityFactory.produceFromType(data.type, data.data));
     }
 
   }
 }
 
-export class ClientNetworkController extends NetworkController {
+export class ClientNetworkController extends NetworkController<ClientWorld> {
   private socket: SocketIOClient.Socket;
   private clientId: string;
 
@@ -39,7 +43,7 @@ export class ClientNetworkController extends NetworkController {
     this.socket = SocketIOClient(url, { path: '/api' });
 
     this.socket.on('connect', this.onConnect);
-    this.socket.on('event', this.onEvent);
+    this.socket.on('message', this.onMessage);
     this.socket.on('disconnect', this.onDisconnect);
 
     this.registerWorldMessages();
@@ -53,10 +57,16 @@ export class ClientNetworkController extends NetworkController {
     console.log('Connected to server!');
   }
 
-  onEvent(data: any) {
-    console.log('Recieved message:', data);
+  onMessage(message: any) {
+    console.log('Recieved event!', message);
+    if (message.type === WorldMessages.AddEntity.TYPE) {
+      console.log('Recieved add entity message!');
+      new WorldMessages.AddEntity(message.data).apply(message.data, this.world);
+    } else if (message.type === 'Handshake') {
+      console.log('Recieved Handshake message:' + message.data);
+      this.clientId = message.data.clientId;
+    }
   }
-
 
   onDisconnect() {
     console.log('Disconnected from server!');

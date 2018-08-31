@@ -12,6 +12,7 @@ let io = SocketIO(server, { path: '/api' });
 
 io.on('connection', socket => {
   console.log('New connection with id %s.', socket.id);
+  socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1}});
   socket.on('event', data => {
     console.log('Recieved a message!', data);
   });

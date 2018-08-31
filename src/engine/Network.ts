@@ -6,25 +6,24 @@ import { World } from './World'
 export interface Message {
   type: string;
   data: any;
-    apply(data: any, controller: NetworkController): void;
 }
 
 export interface MessageHandler {
-  apply(data: any, controller: NetworkController): void;
+  apply(data: any, controller: NetworkController<any>): void;
 }
 
 /**
  */
-export abstract class NetworkController {
+export abstract class NetworkController<T extends World> {
   private messageHandlers: any = {};
   private messages: any = {};
-  protected _world: World;
+  protected _world: T;
 
   get world() {
     return this._world;
   }
 
-  constructor(world: World) {
+  constructor(world: T) {
     this._world = world;
   }
 

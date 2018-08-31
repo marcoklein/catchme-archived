@@ -3,7 +3,7 @@
 ## Timeline
 ### Test Alpha
 Network communication:
-1. client connects to server
+1. [done] client connects to server
 2. server sends basic sprite
 3. client renders sprite
 
