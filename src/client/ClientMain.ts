@@ -1,4 +1,4 @@
-// <reference path="../phaser.d.ts"/>
+/// <reference path="../../devDependencies/phaser.d.ts"/>
 
 import * as Phaser from 'phaser';
 import { MainScene } from './scenes/MainScene';
