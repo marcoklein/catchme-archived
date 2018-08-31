@@ -9,7 +9,7 @@ const config: GameConfig = {
   height: 600,
   type: Phaser.AUTO,
   parent: "game",
-  //scene: MainScene,
+  scene: MainScene,
   physics: {
     default: "arcade",
     arcade: {
@@ -19,9 +19,12 @@ const config: GameConfig = {
 };
 
 // game class
-export class Game extends Phaser.Game {
+export default class Game extends Phaser.Game {
   constructor(config: GameConfig) {
     super(config);
+  }
+
+  create() {
   }
 }
 

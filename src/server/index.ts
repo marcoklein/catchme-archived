@@ -1,0 +1,2 @@
+
+const GameServer = require('./ServerMain');
