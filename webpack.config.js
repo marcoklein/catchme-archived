@@ -14,6 +14,9 @@ module.exports = {
         enforce: 'pre',
         test: /\.js$/,
         loader: 'source-map-loader'
+        /*include: [
+          path.resolve(__dirname, 'src')
+        ]*/
       }
     ]
   },

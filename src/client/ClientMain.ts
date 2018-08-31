@@ -19,7 +19,7 @@ const config: GameConfig = {
 };
 
 // game class
-export default class Game extends Phaser.Game {
+class Game extends Phaser.Game {
   constructor(config: GameConfig) {
     super(config);
   }
@@ -27,6 +27,7 @@ export default class Game extends Phaser.Game {
   create() {
   }
 }
+
 
 // when the page is loaded, create our game instance
 window.onload = () => {

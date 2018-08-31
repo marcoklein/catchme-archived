@@ -6,11 +6,13 @@
   "scripts": {
     "test-watch": "mocha --watch",
     "build-server": "tsc --build tsconfig.json",
+    "build-client-ts": "tsc --build tsconfig-client.json",
     "build-client": "webpack -p",
+    "build-server-live": "./node_modules/.bin/ts-node ./src/server/index.ts",
     "old-build-client": "tsc --build tsconfig-client.json",
     "watch-all": "nodemon -w \"src/**/*\" -e \"ts\" --exec \"tsc --build tsconfig.json & npm build-client & node built/\"",
     "old-build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server & node built/\"",
-    "build:live": "nodemon -w src/**/* -e ts --exec \"./node_modules/.bin/ts-node -- ./src/server/index.ts\""
+    "build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server-live\""
   },
   "keywords": [
     "CatchMe",

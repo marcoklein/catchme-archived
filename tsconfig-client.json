@@ -6,7 +6,7 @@
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
-    "outFile": "public/built/catchmeclient.js",
+    "outDir": "./dist-client/",
     "sourceMap": true
   },
   "include": [
