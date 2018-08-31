@@ -13,10 +13,8 @@ module.exports = {
       {
         enforce: 'pre',
         test: /\.js$/,
-        loader: 'source-map-loader'
-        /*include: [
-          path.resolve(__dirname, 'src')
-        ]*/
+        loader: 'source-map-loader',
+        exclude: /node_modules/
       }
     ]
   },
@@ -26,5 +24,8 @@ module.exports = {
   output: {
     filename: 'catchmeclient.js',
     path: path.resolve(__dirname, 'public/built')
+  },
+  externals: {
+    'phaser': 'phaser'
   }
 };

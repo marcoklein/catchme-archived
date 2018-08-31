@@ -1,3 +1,3 @@
 console.log('client started');
 
-//const Game = require('./ClientMain');
+const Game = require('./ClientMain');

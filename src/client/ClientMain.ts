@@ -1,6 +1,6 @@
-/// <reference path="../phaser.d.ts"/>
+// <reference path="../phaser.d.ts"/>
 
-import Phaser = require('phaser');
+import * as Phaser from 'phaser';
 import { MainScene } from './scenes/MainScene';
 
 // main game configuration
