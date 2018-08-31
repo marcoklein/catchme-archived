@@ -15,7 +15,7 @@ export interface EntityProducer {
 export class EntityFactory {
 
   // map of registereded entities associated to their type key
-  private registeredEntities: any = {};
+  private registeredProducers: any = {};
 
   /**
    * Produces and returns Entity with given type.
@@ -25,11 +25,11 @@ export class EntityFactory {
    * @param type Type of Entity to produce.
    */
   produceFromType(type: string, data?: Object): DataNode {
-    let producer = this.registeredEntities[type];
+    let producer = this.registeredProducers[type];
     if (producer) {
       return producer.produceEntity(type, data);
     }
-    return undefined;
+    throw new Error('Unsupported Entity type of EntityFactory: ' + type);
   }
 
   /**
@@ -38,8 +38,8 @@ export class EntityFactory {
    * @param type Type of producer.
    * @param producer Producer used to create Entity.
    */
-  registerEntity(type: string, producer: EntityProducer) {
-    this.registeredEntities[type] = producer;
+  registerProducer(type: string, producer: EntityProducer) {
+    this.registeredProducers[type] = producer;
   }
 
   /**
@@ -47,7 +47,7 @@ export class EntityFactory {
    *
    * @param type Type of EntityProducer to remove.
    */
-  unregisterEntity(type: string) {
-    delete this.registeredEntities[type];
+  unregisterProducer(type: string) {
+    delete this.registeredProducers[type];
   }
 }

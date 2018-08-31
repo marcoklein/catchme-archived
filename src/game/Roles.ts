@@ -7,9 +7,10 @@ import { Role, DataNode } from "../engine/Dataframework";
 /**
  * Used to hold a Phaser Sprite that is used for rendering.
  */
-export class Sprite implements Role {
+export class SpriteRole implements Role {
   private initX: number;
   private initY: number;
+  private initImage: string;
 
 
   id: string;
@@ -21,9 +22,10 @@ export class Sprite implements Role {
   private _sprite: GameObjects.Sprite;
 
 
-  constructor(initX?: number, initY?: number) {
+  constructor(initX?: number, initY?: number, initImage?: string) {
     this.initX = initX;
     this.initY = initY;
+    this.initImage = initImage;
   }
 
   get sprite(): GameObjects.Sprite {
@@ -31,11 +33,14 @@ export class Sprite implements Role {
   }
 
   set sprite(sprite: GameObjects.Sprite) {
-    this.sprite = sprite;
+    this._sprite = sprite;
     // move sprite to initial location
     if (this.initX !== undefined && this.initY !== undefined) {
-      this.sprite.x = this.initX;
-      this.sprite.y = this.initY;
+      this._sprite.x = this.initX;
+      this._sprite.y = this.initY;
+    }
+    if (this.initImage) {
+      this._sprite.setTexture(this.initImage);
     }
     this.syncWithNode(this.node);
   }

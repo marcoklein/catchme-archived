@@ -3,11 +3,11 @@ import { Role, DataNode } from "../engine/Dataframework";
 import * as Roles from "./Roles";
 
 
-class SimpleSpriteProducer implements EntityProducer {
-  produceEntity(type: string): DataNode {
+export class SimpleSpriteProducer implements EntityProducer {
+  produceEntity(type: string, data: any): DataNode {
     let node = new DataNode();
 
-    node.addRole(new Roles.Sprite());
+    node.addRole(new Roles.SpriteRole(data.x, data.y, data.image));
 
     return node;
   }

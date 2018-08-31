@@ -34,6 +34,10 @@ export class Data {
 
   private listeners: Array<DataListener> = [];
 
+  constructor() {
+    this.data = {};
+  }
+
   get(key?: string) {
     if (key === undefined) {
       return this.data;
@@ -88,6 +92,9 @@ export class DataNode {
 
   private lastRoleId = 0;
 
+  constructor() {
+    this.data = new Data();
+  }
 
   /* Listeners */
   addListener(listener: DataNodeListener): void {
@@ -195,7 +202,7 @@ export class DataNode {
    */
   private generateNewRoleId(): string {
     this.lastRoleId++;
-    if (this.roles.lastId !== 'undefined') {
+    if (this.roles.lastId !== undefined) {
       // node with id already existing -> generate new id
       return this.generateNewRoleId();
     }

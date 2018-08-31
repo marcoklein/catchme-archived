@@ -9,22 +9,17 @@ export interface Message {
 }
 
 export interface MessageHandler {
-  apply(data: any, controller: NetworkController<any>): void;
+  apply(data: any, controller: NetworkController): void;
 }
 
 /**
  */
-export abstract class NetworkController<T extends World> {
+export abstract class NetworkController {
   private messageHandlers: any = {};
   private messages: any = {};
-  protected _world: T;
 
-  get world() {
-    return this._world;
-  }
 
-  constructor(world: T) {
-    this._world = world;
+  constructor() {
   }
 
   registerMessage(type: string, message: any) {

@@ -22,24 +22,30 @@ const config: GameConfig = {
 };
 
 // game class
-class Game extends Phaser.Game {
+export class ClientGame extends Phaser.Game {
 
   private network: ClientNetworkController;
-  private world: ClientWorld;
+  private _world: ClientWorld;
 
   constructor(config: GameConfig) {
     super(config);
 
-    this.world = new ClientWorld();
-    this.network = new ClientNetworkController('http://localhost:4680', this.world);
+    this._world = new ClientWorld(this);
+    this.network = new ClientNetworkController('http://localhost:4680', this);
+  }
+
+  get world() {
+    return this._world;
+  }
+
+  preload() {
   }
 
   create() {
   }
 }
 
-
 // when the page is loaded, create our game instance
 window.onload = () => {
-  var game = new Game(config);
+  var game = new ClientGame(config);
 };
