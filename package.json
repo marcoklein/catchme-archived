@@ -1,0 +1,31 @@
+{
+  "name": "catchme",
+  "version": "0.0.1",
+  "description": "Tagging game based on Phaser.",
+  "main": "index.js",
+  "scripts": {
+    "test-watch": "mocha --watch",
+    "tsc-build": "tsc --build tsconfig.json",
+    "tsc-watch": "tsc --build --watch tsconfig.json",
+    "watch": "nodemon -w \"src/**/*\" -e \"ts\" --exec \"tsc --build tsconfig.json & node built/\"",
+    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+  },
+  "keywords": [
+    "CatchMe",
+    "game",
+    "phaser",
+    "architecture",
+    "network",
+    "multiplayer"
+  ],
+  "author": "Marco Klein",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^10.9.4",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.0.1"
+  },
+  "dependencies": {
+    "phaser": "^3.11.0"
+  }
+}
