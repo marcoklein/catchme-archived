@@ -9,6 +9,7 @@
   "author": "Marco Klein",
   "license": "ISC",
   "dependencies": {
-    "phaser": "^3.11.0"
+    "phaser": "^3.11.0",
+    "socket.io": "^2.1.1"
   }
 }

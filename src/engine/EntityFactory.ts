@@ -2,7 +2,7 @@ import { DataNode } from "./Dataframework";
 
 
 export interface EntityProducer {
-  produceEntity(type: string): DataNode;
+  produceEntity(type: string, data: Object): DataNode;
 }
 
 /**
@@ -24,10 +24,10 @@ export class EntityFactory {
    *
    * @param type Type of Entity to produce.
    */
-  produceFromType(type: string): DataNode {
+  produceFromType(type: string, data?: Object): DataNode {
     let producer = this.registeredEntities[type];
     if (producer) {
-      return producer();
+      return producer.produceEntity(type, data);
     }
     return undefined;
   }
