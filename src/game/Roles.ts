@@ -4,10 +4,41 @@ import * as Phaser from 'phaser';
 import { GameObjects } from 'phaser';
 import { Role, DataNode } from "../engine/Dataframework";
 
+
+export abstract class PhaserRole implements Role {
+
+  id: string;
+  node: DataNode;
+  name: string;
+
+  protected _scene: Phaser.Scene;
+
+  get scene() {
+    return this._scene;
+  }
+
+  set scene(scene: Phaser.Scene) {
+    let oldScene = this._scene;
+    this._scene = scene;
+    this.changedPhaserScene(scene, oldScene);
+  }
+
+  abstract changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void;
+
+  updateRole(delta: number, node: DataNode): void {
+  }
+  removedFromNode(node: DataNode): void {
+  }
+  addedToNode(node: DataNode): void {
+  }
+
+}
+
 /**
  * Used to hold a Phaser Sprite that is used for rendering.
  */
-export class SpriteRole implements Role {
+export class SpriteRole extends PhaserRole {
+  scene: Phaser.Scene;
   private initX: number;
   private initY: number;
   private initImage: string;
@@ -23,6 +54,7 @@ export class SpriteRole implements Role {
 
 
   constructor(initX?: number, initY?: number, initImage?: string) {
+    super();
     this.initX = initX;
     this.initY = initY;
     this.initImage = initImage;
@@ -40,16 +72,22 @@ export class SpriteRole implements Role {
       this._sprite.y = this.initY;
     }
     if (this.initImage) {
-      this._sprite.setTexture(this.initImage);
+      //this._sprite.setTexture(this.initImage);
     }
     this.syncWithNode(this.node);
   }
 
   private syncWithNode(node: DataNode) {
-    if (this.sprite === undefined) return;
+    if (this._sprite === undefined) return;
     // sync location with parent node
     node.data.set('x', this.sprite.x);
     node.data.set('y', this.sprite.y);
+  }
+
+  changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
+    console.log('Changed phaser scene: adding');
+    this._sprite = this._scene.add.sprite(200, 200, 'test-sprite');
+    //this._sprite = this._scene.add.sprite(this.initX, this.initY, this.initImage);
   }
 
   addedToNode(node: DataNode): void {

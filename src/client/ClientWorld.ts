@@ -2,20 +2,22 @@ import { World } from '../engine/World'
 import { DataNode } from '../engine/Dataframework'
 import { EntityFactory } from '../engine/EntityFactory'
 import { SimpleSpriteProducer } from '../game/EntityProducers'
-import { ClientGame } from './ClientMain'
-import { SpriteRole } from '../game/Roles'
+import { ClientGameInterface } from './ClientMain'
+import { PhaserRole, SpriteRole } from '../game/Roles'
 
-
+/**
+ * Extends basic World with client specific behaviors and properties.
+ */
 export class ClientWorld extends World {
-  private _clientGame: ClientGame;
+  private _gameScene: Phaser.Scene;
 
-  get clientGame() {
-    return this._clientGame;
+  get gameScene() {
+    return this._gameScene;
   }
 
-  constructor(clientGame: ClientGame) {
+  constructor(gameScene: Phaser.Scene) {
     super(new EntityFactory());
-    this._clientGame = clientGame;
+    this._gameScene = gameScene;
 
     this.registerEntityProducers();
   }
@@ -28,9 +30,12 @@ export class ClientWorld extends World {
 
   entityAdded(entity: DataNode): void {
     // phaser entity?
-    let spriteRole = entity.getRoleByName('Sprite');
-    if (spriteRole) {
-      (<SpriteRole> spriteRole).sprite = this._clientGame.scene.getScene('MainScene').add.sprite(100, 100, '');
+    // TODO set sprite for all roles that implement the "PhaserRole"
+    let spriteRoles = entity.getRolesByClass(PhaserRole);
+    if (spriteRoles) {
+      spriteRoles.forEach((role: PhaserRole) => {
+        role.scene = this._gameScene;
+      });
     }
   }
 }

@@ -133,6 +133,17 @@ export class DataNode {
     return this.rolesByName[name];
   }
 
+  getRolesByClass(clazz: Function): Array<Role> {
+    // TODO check if clazz is a function and instanceof Role
+    let result: Array<Role> = [];
+    this.roleArray.forEach(role => {
+      if (role instanceof clazz) {
+        result.push(role);
+      }
+    });
+    return result;
+  }
+
   /**
    * Add given role.
    * The role must have a name property.

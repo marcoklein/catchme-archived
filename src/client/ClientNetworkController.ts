@@ -2,7 +2,7 @@ import * as SocketIOClient from 'socket.io-client';
 import { NetworkController, Message } from '../engine/Network';
 import { World } from '../engine/World';
 import { ClientWorld } from './ClientWorld';
-import { ClientGame } from './ClientMain';
+import { ClientGameInterface } from './ClientMain';
 //const io = require('socket.io');
 
 
@@ -40,9 +40,9 @@ export class ClientNetworkController extends NetworkController {
   private socket: SocketIOClient.Socket;
   private clientId: string;
 
-  game: ClientGame;
+  game: ClientGameInterface;
 
-  constructor(url: string, game: ClientGame) {
+  constructor(url: string, game: ClientGameInterface) {
     super();
     if (game === undefined) {
       throw new Error('ClientNetworkController: game has to be defined.');

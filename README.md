@@ -14,5 +14,5 @@ Framework:
   * Server & Client
 
 ToDos:
-- add functionality to filter roles by class (use typeof?)
+- [done] add functionality to filter roles by class (use instanceof)
 - add Phaser role that is called when added to node
