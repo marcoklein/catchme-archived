@@ -15,9 +15,9 @@ export interface Role {
   node: DataNode;
   id: string;
 
-  addedToNode(parent: DataNode): void;
-  removedFromNode(parent: DataNode): void;
-  update(delta: number, parent: DataNode): void;
+  addedToNode(node: DataNode): void;
+  removedFromNode(node: DataNode): void;
+  updateRole(delta: number, node: DataNode): void;
 }
 
 export interface DataListener {
