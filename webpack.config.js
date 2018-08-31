@@ -26,6 +26,6 @@ module.exports = {
     path: path.resolve(__dirname, 'public/built')
   },
   externals: {
-    'phaser': 'phaser'
+    'phaser': 'Phaser'
   }
 };
