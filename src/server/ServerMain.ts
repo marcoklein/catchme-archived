@@ -1,65 +1,58 @@
-/// <reference path="../../devDependencies/phaser.d.ts"/>
-
-import * as Phaser from 'phaser';
-import { GameScene } from './scenes/GameScene';
+/**
+ * The server uses Matter.js to simulate physics on the server.
+ */
+import * as Matter from 'matter-js'
 
 import { ServerWorld } from './ServerWorld';
 import { ServerNetworkController } from './ServerNetworkController';
-import * as express from 'express';
-import * as path from 'path';
-
-const window: any = {};
-
-// main game configuration
-const config: GameConfig = {
-  type: Phaser.HEADLESS,
-  //parent: "game",
-  scene: GameScene,
-  physics: {
-    default: "arcade",
-    arcade: {
-      gravity: { y: 200 }
-    }
-  }
-};
+import { WorldListener } from '../engine/World';
+import { DataNode } from '../engine/Dataframework';
+import { MatterRole } from './ServerRoles';
 
 export interface ServerGameInterface {
   network: ServerNetworkController,
-  world: ServerWorld
+  world: ServerWorld,
+  engine: Matter.Engine
 }
 
-// game class
-export class ServerMain extends Phaser.Game {
+export default class ServerGame implements ServerGameInterface {
+  world: ServerWorld;
+  network: ServerNetworkController;
+  // physics
+  engine: Matter.Engine;
 
-
-  constructor(config: GameConfig) {
-    super(config);
-
+  constructor() {
+    init();
   }
 
-  create() {
-    console.log('Created ServerMain');
-    let app = express();
+  private init() {
+    // init matter
+    this.engine = Matter.Engine.create();
 
-    // use public from cmd dir
-    app.use(express.static(path.join('', 'public')));
+    let testBox = Matter.Bodies.rectangle(400, 200, 80, 80);
+    Matter.World.add(this.engine.world, testBox);
+    Matter.Engine.run(this.engine);
 
-    app.use(function(req: any, res: any, next: any) {
-      // link not found
-      res.status(200).sendFile(__dirname + "/public/index.html");
-      next();
-    });
+    // init world and network
+    this.world = new ServerWorld();
+    this.network = new ServerNetworkController(4681, this);
 
-    app.listen(4680, () => {
-      console.log('Webpage is listening on port 4680!');
+
+    this.initWorldListener();
+  }
+
+  private initWorldListener() {
+    // sync with engine
+    this.world.addListener(<WorldListener> {
+      entityAdded(entity: DataNode) {
+        console.log('entity added');
+        entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
+          console.log('calling matter change');
+          role.engine = this.engine;
+        });
+
+      }
     });
   }
 
 }
-
-export default new ServerMain(config);
-
-// when the page is loaded, create our game instance
-/*window.onload = () => {
-  var game = new ServerMain(config);
-};*/

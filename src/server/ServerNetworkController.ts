@@ -43,7 +43,7 @@ export class ServerNetworkController extends NetworkController {
 
   game: ServerGameInterface;
 
-  constructor(url: string, game: ServerGameInterface) {
+  constructor(port: number, game: ServerGameInterface) {
     super();
     if (game === undefined) {
       throw new Error('ServerNetworkController: game has to be defined.');
@@ -68,7 +68,7 @@ export class ServerNetworkController extends NetworkController {
 
     this.registerWorldMessages();
 
-    this.server.listen(4680);
+    this.server.listen(port);
   }
 
   private registerWorldMessages() {
