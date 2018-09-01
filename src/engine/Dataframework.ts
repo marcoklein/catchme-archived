@@ -85,7 +85,7 @@ export class DataNode {
   }
 
   update(delta: number) {
-    this.roles.forEach((role: Role) => {
+    this.roleArray.forEach((role: Role) => {
       role.updateRole(delta, this);
     });
   }
