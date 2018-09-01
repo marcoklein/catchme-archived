@@ -5,7 +5,12 @@ import { MatterCircleBody } from './ServerRoles';
 
 export class PlayerProducer implements EntityProducer {
 
-  produceEntity(type: string, data: Object): DataNode {
+  produceEntity(type: string, data: any): DataNode {
+    // validate data object
+    data = data || {};
+    data.type = type;
+    data.image = data.image || 'test-sprite';
+
     let node = new DataNode(data);
     //node.data('type', type);
 

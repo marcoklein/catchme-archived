@@ -48,6 +48,8 @@ class SyncWorldListener implements WorldListener, DataNodeListener {
   }
 
   entityAdded(entity: DataNode) {
+    // inform clients
+    this.network.io.emit('message', { type: 'WM.AE', data: { type: entity.data('type'), data: entity.data()}});
     entity.addListener(this);
   }
 
@@ -110,7 +112,6 @@ export class ServerNetworkController extends NetworkController {
     this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
 
     // send simple sprite
-    socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { id: '1', x: 200, y: 200, image: 'test-sprite' }}});
 
     socket.on('event', data => {
       console.log('Recieved an event!', data);
