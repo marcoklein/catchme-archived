@@ -22,7 +22,11 @@ export default class ServerGame implements ServerGameInterface {
   engine: Matter.Engine;
 
   constructor() {
-    init();
+  }
+
+  start() {
+    console.log('Started ServerGame.');
+    this.init();
   }
 
   private init() {

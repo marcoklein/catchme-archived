@@ -49,10 +49,11 @@ export class ServerNetworkController extends NetworkController {
       throw new Error('ServerNetworkController: game has to be defined.');
     }
     this.game = game;
-    this.io = SocketIO();
+    this.io = SocketIO(port);
+    console.log('init server network');
 
 
-    this.io.on('connection', socket => {
+    /*this.io.on('connection', socket => {
       console.log('New connection with id %s.', socket.id);
       socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
       // send simple sprite
@@ -64,11 +65,12 @@ export class ServerNetworkController extends NetworkController {
       socket.on('disconnect', () => {
         console.log('Client disconnected.');
       });
-    });
+    });*/
 
     this.registerWorldMessages();
 
-    this.io.listen(port);
+    //this.io.listen(port);
+    console.log('SocketIO listening on port %i', port);
   }
 
   private registerWorldMessages() {

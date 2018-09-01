@@ -54,7 +54,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
       throw new Error('ClientNetworkController: game has to be defined.');
     }
     this.game = game;
-    this.socket = SocketIOClient(url, { path: '/api' });
+    this.socket = SocketIOClient(url);
 
     this.socket.on('connect', this.onConnect);
     this.socket.on('message', (message: any) => {

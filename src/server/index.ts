@@ -6,6 +6,10 @@
 const express = require('express');
 const path = require('path');
 
+import { ServerGame } from './ServerMain';
+
+let game = new ServerGame();
+
 
 // create express app
 const app = express();
@@ -22,6 +26,5 @@ app.use(function(req: any, res: any, next: any) {
 
 app.listen(4680, function() {
   console.log('Listening on port 4680!');
+  game.start();
 });
-
-require('./ServerMain');
