@@ -24,7 +24,7 @@ export abstract class NetworkController {
 
   registerMessage(type: string, message: any) {
     console.log('Network: registered new message with type "' + type + '"');
-    this.messages[name] = message;
+    this.messages[type] = message;
   }
 
   registerMessageHandler(name: string, handler: MessageHandler) {

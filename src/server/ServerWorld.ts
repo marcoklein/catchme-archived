@@ -1,9 +1,8 @@
 import { World } from '../engine/World'
 import { DataNode } from '../engine/Dataframework'
 import { EntityFactory } from '../engine/EntityFactory'
-import { SimpleSpriteProducer } from '../game/EntityProducers'
+import { PlayerProducer } from './ServerEntityProducer'
 import { ServerGameInterface } from './ServerMain'
-import { PhaserRole, SpriteRole } from '../game/Roles'
 
 /**
  * Extends basic World with client specific behaviors and properties.
@@ -19,7 +18,7 @@ export class ServerWorld extends World {
 
   private registerEntityProducers() {
     this.entityFactory.registerProducer(
-      'sprite', new SimpleSpriteProducer()
+      'player', new PlayerProducer()
     );
   }
 

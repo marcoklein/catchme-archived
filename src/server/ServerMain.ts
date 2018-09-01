@@ -15,7 +15,7 @@ export interface ServerGameInterface {
   engine: Matter.Engine
 }
 
-export default class ServerGame implements ServerGameInterface {
+export class ServerGame implements ServerGameInterface {
   world: ServerWorld;
   network: ServerNetworkController;
   // physics

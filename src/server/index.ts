@@ -2,20 +2,19 @@
  * Main entry for the server.
  * Creates a new Phaser game and initializes server.
  */
-
-const express = require('express');
-const path = require('path');
+import * as Express from 'express';
+import * as Path from 'path';
 
 import { ServerGame } from './ServerMain';
-
+(<any>global).window = {};
 let game = new ServerGame();
 
 
 // create express app
-const app = express();
+const app = Express();
 
 // use public from cmd dir
-app.use(express.static(path.join('', 'public')));
+app.use(Express.static(Path.join('', 'public')));
 
 app.use(function(req: any, res: any, next: any) {
   // link not found

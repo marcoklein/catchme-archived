@@ -41,6 +41,8 @@ export namespace WorldMessages {
 export class ServerNetworkController extends NetworkController {
   private io: SocketIO.Server;
 
+  private clientsById: any = {};
+
   game: ServerGameInterface;
 
   constructor(port: number, game: ServerGameInterface) {
@@ -53,7 +55,9 @@ export class ServerNetworkController extends NetworkController {
     console.log('init server network');
 
 
-    /*this.io.on('connection', socket => {
+    this.io.on('connection', socket => {
+      this.clientsById[socket.id] = socket;
+
       console.log('New connection with id %s.', socket.id);
       socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
       // send simple sprite
@@ -64,8 +68,9 @@ export class ServerNetworkController extends NetworkController {
       });
       socket.on('disconnect', () => {
         console.log('Client disconnected.');
+        delete this.clientsById[socket.id];
       });
-    });*/
+    });
 
     this.registerWorldMessages();
 
