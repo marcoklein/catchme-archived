@@ -27,6 +27,8 @@ export class ServerGame implements ServerGameInterface {
   start() {
     console.log('Started ServerGame.');
     this.init();
+    // start runner
+    Matter.Engine.run(this.engine);
   }
 
   private init() {
@@ -35,18 +37,21 @@ export class ServerGame implements ServerGameInterface {
 
     let testBox = Matter.Bodies.rectangle(400, 200, 80, 80);
     Matter.World.add(this.engine.world, testBox);
-    Matter.Engine.run(this.engine);
 
-    Matter.Events.on(this.engine, 'tick', () => {
-      console.log('tick');
-    });
 
     // init world and network
     this.world = new ServerWorld();
     this.network = new ServerNetworkController(4681, this);
 
+    // listen to update events and update
+    let lastTimestamp = 0;
+    Matter.Events.on(this.engine, 'tick', event => {
+      this.world.update(event.timestamp - lastTimestamp);
+      lastTimestamp = event.timestamp;
+    });
 
     this.initWorldListener();
+
   }
 
   private initWorldListener() {
