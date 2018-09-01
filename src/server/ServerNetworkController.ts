@@ -56,26 +56,37 @@ export class ServerNetworkController extends NetworkController {
 
 
     this.io.on('connection', socket => {
-      this.clientsById[socket.id] = socket;
-
-      console.log('New connection with id %s.', socket.id);
-      socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
-      // send simple sprite
-      socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { id: '1', x: 200, y: 200, image: 'test-sprite' }}});
-
-      socket.on('event', data => {
-        console.log('Recieved a message!', data);
-      });
-      socket.on('disconnect', () => {
-        console.log('Client disconnected.');
-        delete this.clientsById[socket.id];
-      });
+      this.handleNewConnection(socket);
     });
 
     this.registerWorldMessages();
 
     //this.io.listen(port);
     console.log('SocketIO listening on port %i', port);
+  }
+
+  private handleNewConnection(socket: SocketIO.Socket) {
+    // store connection mapped by id
+    this.clientsById[socket.id] = socket;
+
+    console.log('New connection with id %s.', socket.id);
+
+    socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
+
+    // create player for client
+    let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
+    this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
+
+    // send simple sprite
+    socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { id: '1', x: 200, y: 200, image: 'test-sprite' }}});
+
+    socket.on('event', data => {
+      console.log('Recieved an event!', data);
+    });
+    socket.on('disconnect', () => {
+      console.log('Client disconnected.');
+      delete this.clientsById[socket.id];
+    });
   }
 
   private registerWorldMessages() {

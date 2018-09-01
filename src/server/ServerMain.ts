@@ -46,13 +46,13 @@ export class ServerGame implements ServerGameInterface {
   }
 
   private initWorldListener() {
+    let self = this;
     // sync with engine
     this.world.addListener(<WorldListener> {
       entityAdded(entity: DataNode) {
         console.log('entity added');
         entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
-          console.log('calling matter change');
-          role.engine = this.engine;
+          role.engine = self.engine;
         });
 
       }

@@ -5,7 +5,8 @@ export abstract class MatterRole implements Role {
 
   id: string;
   node: DataNode;
-  name: string;
+
+  abstract get name(): string;
 
   private _engine: Matter.Engine;
 
@@ -48,6 +49,10 @@ export class MatterCircleBody extends MatterBodyRole {
 
   get radius() {
     return this._radius;
+  }
+
+  get name() {
+    return 'MatterCircleBody';
   }
 
   // TODO if radius set -> update matter circle object
