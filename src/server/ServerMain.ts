@@ -1,55 +1,65 @@
+/// <reference path="../../devDependencies/phaser.d.ts"/>
 
-const express = require('express');
-const path = require('path');
-import * as SocketIO from 'socket.io';
+import * as Phaser from 'phaser';
+import { GameScene } from './scenes/GameScene';
 
-// create express app
-const app = express();
+import { ServerWorld } from './ServerWorld';
+import { ServerNetworkController } from './ServerNetworkController';
+import * as express from 'express';
+import * as path from 'path';
 
-// create server and init socket.io
-let server = require('http').createServer(app);
-let io = SocketIO(server, { path: '/api' });
+const window: any = {};
 
-io.on('connection', socket => {
-  console.log('New connection with id %s.', socket.id);
-  socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
-  // send simple sprite
-  socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { x: 200, y: 200, image: 'test-sprite' }}});
+// main game configuration
+const config: GameConfig = {
+  type: Phaser.HEADLESS,
+  //parent: "game",
+  scene: GameScene,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 200 }
+    }
+  }
+};
 
-  socket.on('event', data => {
-    console.log('Recieved a message!', data);
-  });
-  socket.on('disconnect', () => {
-    console.log('Client disconnected.');
-  });
-});
+export interface ServerGameInterface {
+  network: ServerNetworkController,
+  world: ServerWorld
+}
 
-// all api calls are handled by socket.io
-app.use('/api', (req: any, res: any, next: any) => {
-  console.log('Recieved an API call!')
-  next();
-});
-
-// use public from cmd dir
-app.use(express.static(path.join('', 'public')));
-
-app.use(function(req: any, res: any, next: any) {
-  // link not found
-  res.status(200).sendFile(__dirname + "/public/index.html");
-  next();
-});
+// game class
+export class ServerMain extends Phaser.Game {
 
 
-server.listen(4680, function() {
-  console.log('Listening on port 4680!');
-});
+  constructor(config: GameConfig) {
+    super(config);
 
+  }
 
-/**
- * Server of a game.
- */
-export class ServerMain {
+  create() {
+    console.log('Created ServerMain');
+    let app = express();
+
+    // use public from cmd dir
+    app.use(express.static(path.join('', 'public')));
+
+    app.use(function(req: any, res: any, next: any) {
+      // link not found
+      res.status(200).sendFile(__dirname + "/public/index.html");
+      next();
+    });
+
+    app.listen(4680, () => {
+      console.log('Webpage is listening on port 4680!');
+    });
+  }
 
 }
 
-export default new ServerMain();
+export default new ServerMain(config);
+
+// when the page is loaded, create our game instance
+/*window.onload = () => {
+  var game = new ServerMain(config);
+};*/

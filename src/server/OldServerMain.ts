@@ -1,9 +1,3 @@
-/**
- * Main entry for the server.
- * Creates a new Phaser game and initializes server.
- */
-//require('./ServerMain');
-
 
 const express = require('express');
 const path = require('path');
