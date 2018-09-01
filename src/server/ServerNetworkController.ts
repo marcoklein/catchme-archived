@@ -39,7 +39,7 @@ export namespace WorldMessages {
 }
 
 export class ServerNetworkController extends NetworkController {
-  private server: SocketIO.Server;
+  private io: SocketIO.Server;
 
   game: ServerGameInterface;
 
@@ -49,14 +49,14 @@ export class ServerNetworkController extends NetworkController {
       throw new Error('ServerNetworkController: game has to be defined.');
     }
     this.game = game;
-    this.server = SocketIO({ path: '/api' });
+    this.io = SocketIO();
 
 
-    this.server.on('connection', socket => {
+    this.io.on('connection', socket => {
       console.log('New connection with id %s.', socket.id);
       socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
       // send simple sprite
-      socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { x: 200, y: 200, image: 'test-sprite' }}});
+      socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { id: '1', x: 200, y: 200, image: 'test-sprite' }}});
 
       socket.on('event', data => {
         console.log('Recieved a message!', data);
@@ -68,7 +68,7 @@ export class ServerNetworkController extends NetworkController {
 
     this.registerWorldMessages();
 
-    this.server.listen(port);
+    this.io.listen(port);
   }
 
   private registerWorldMessages() {
