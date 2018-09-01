@@ -9,6 +9,8 @@ const express = require('express');
 const path = require('path');
 import * as SocketIO from 'socket.io';
 
+import { Message } from '../engine/Network'
+
 // create express app
 const app = express();
 
@@ -16,14 +18,29 @@ const app = express();
 let server = require('http').createServer(app);
 let io = SocketIO(server, { path: '/api' });
 
+class TestMessage implements Message {
+  data: any;
+  type: string = 'test';
+  msg: string;
+  constructor(msg?: string) {
+    this.msg = msg;
+  }
+}
+
 io.on('connection', socket => {
   console.log('New connection with id %s.', socket.id);
   socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
+  socket.emit('message', new TestMessage('asd'))
+  // send entity id of player
+  socket.emit('player.entityId', '1');
   // send simple sprite
-  socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { x: 200, y: 200, image: 'test-sprite' }}});
+  socket.emit('message', { type: 'WM.AE', data: { type: 'sprite', data: { id: '1', x: 200, y: 200, image: 'test-sprite' }}});
 
   socket.on('event', data => {
     console.log('Recieved a message!', data);
+  });
+  socket.on('player-update', data => {
+    console.log('Recieved a player update!', data);
   });
   socket.on('disconnect', () => {
     console.log('Client disconnected.');

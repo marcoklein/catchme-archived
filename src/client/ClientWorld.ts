@@ -4,12 +4,14 @@ import { EntityFactory } from '../engine/EntityFactory'
 import { SimpleSpriteProducer } from '../game/EntityProducers'
 import { ClientGameInterface } from './ClientMain'
 import { PhaserRole, SpriteRole } from '../game/Roles'
+import { PlayerProducer } from './ClientEntityProducers'
 
 /**
  * Extends basic World with client specific behaviors and properties.
  */
 export class ClientWorld extends World {
   private _gameScene: Phaser.Scene;
+  clientEntity: DataNode;
 
   get gameScene() {
     return this._gameScene;
@@ -25,6 +27,9 @@ export class ClientWorld extends World {
   private registerEntityProducers() {
     this.entityFactory.registerProducer(
       'sprite', new SimpleSpriteProducer()
+    );
+    this.entityFactory.registerProducer(
+      'player', new PlayerProducer()
     );
   }
 

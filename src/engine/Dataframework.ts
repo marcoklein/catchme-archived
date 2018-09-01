@@ -104,6 +104,12 @@ export class DataNode {
     this.listeners.splice(this.listeners.indexOf(listener), 1);
   }*/
 
+  update(delta: number) {
+    this.roles.forEach((role: Role) => {
+      role.updateRole(delta, this);
+    });
+  }
+
   /*private notifyListeners<T extends keyof DataNodeListener>(fnName: T, a: any, b: any) {
     this.listeners.forEach(listener => {
       if (listener[fnName]) {
