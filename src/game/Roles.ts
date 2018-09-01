@@ -98,7 +98,12 @@ export class SpriteRole extends PhaserRole {
   }
 
   updateRole(delta: number, node: DataNode): void {
-    this.syncWithNode(node);
+    // move entity to node position
+    if (this._sprite) {
+      // TODO add data listener and listen to updates of x and y
+      this._sprite.x = node.data('x');
+      this._sprite.y = node.data('y');
+    }
   }
 
 }

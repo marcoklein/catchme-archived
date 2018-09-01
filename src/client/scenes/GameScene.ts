@@ -29,7 +29,7 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
   }
 
   create(): void {
-    var sprite = this.add.sprite(50, 300, 'test-sprite');
+    //var sprite = this.add.sprite(50, 300, 'test-sprite');
 
     this._world = new ClientWorld(this);
     this._network = new ClientNetworkController('http://localhost:4681', this);

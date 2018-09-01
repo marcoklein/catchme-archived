@@ -113,6 +113,12 @@ export class ClientNetworkController extends NetworkController implements WorldC
     } else if (message.type === 'Handshake') {
       console.log('Recieved Handshake message:' + message.data);
       this.clientId = message.data.clientId;
+    } else if (message.type === 'Data.U') {
+      // entity data updated
+      this.game.world.getEntityById(message.data.nodeId).data(message.data.key, message.data.value);
+    } else if (message.type === 'Data.D') {
+      // entity data deleted
+      this.game.world.getEntityById(message.data.nodeId).data(message.data.key, undefined);
     }
   }
 
