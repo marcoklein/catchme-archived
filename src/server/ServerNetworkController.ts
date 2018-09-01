@@ -61,11 +61,11 @@ class SyncWorldListener implements WorldListener, DataNodeListener {
   }
 
   dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void {
-    this.network.io.emit('Data.U', { nodeId: node.data('id'), key: key, value: newValue });
+    this.network.io.emit('message', { type: 'Data.U', data: { nodeId: node.data('id'), key: key, value: newValue }});
   }
 
   dataDeleted(key: string, node: DataNode): void {
-    this.network.io.emit('Data.D', { nodeId: node.data('id'), key: key });
+    this.network.io.emit('message', { type: 'Data.D', data: { nodeId: node.data('id'), key: key }});
   }
 
 

@@ -1,7 +1,7 @@
 
 import { EntityProducer } from '../engine/EntityFactory'
 import { DataNode } from '../engine/Dataframework';
-import { MatterCircleBody } from './ServerRoles';
+import { MatterCircleBody, ShakyRole } from './ServerRoles';
 
 export class PlayerProducer implements EntityProducer {
 
@@ -15,6 +15,7 @@ export class PlayerProducer implements EntityProducer {
     //node.data('type', type);
 
     node.addRole(new MatterCircleBody(10, 10, 40));
+    node.addRole(new ShakyRole());
 
     return node;
   }

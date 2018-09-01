@@ -61,9 +61,12 @@ export class DataNode {
     }
     let oldValue = this._data[key];
     this._data[key] = value;
-    this.listeners.forEach(listener => {
-      listener.dataUpdated(key, value, oldValue, this);
-    });
+    if (value !== oldValue) {
+      console.log('updated value: key=%s, value=%s', key, value);
+      this.listeners.forEach(listener => {
+        listener.dataUpdated(key, value, oldValue, this);
+      });
+    }
   }
   /**
    * Delete data with given key.

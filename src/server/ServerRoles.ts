@@ -34,18 +34,63 @@ export abstract class MatterBodyRole extends MatterRole {
   x: number;
   y: number;
 
+  body: Matter.Body;
+
   constructor(x: number, y: number) {
     super();
     this.x = x;
     this.y = y;
   }
 
+
+  engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
+    this.body = this.createBody(engine);
+    Matter.World.add(engine.world, this.body);
+    // set initial position
+    this.node.data('x', this.x);
+    this.node.data('y', this.y);
+  }
+
+  abstract createBody(engine: Matter.Engine): Matter.Body
+
+  updateRole(delta: number, node: DataNode): void {
+
+  }
+}
+
+export class ShakyRole implements Role {
+  node: DataNode;
+  id: string;
+
+  leftRight: boolean = false;
+
+  get name() {
+    return 'ShakyRole';
+  }
+
+  updateRole(delta: number, node: DataNode): void {
+    if (node.data('x') === undefined || node.data('y') === undefined) {
+      return;
+    }
+    console.log('updated');
+    if (this.leftRight) {
+      node.data('x', node.data('x') - 0.1 * delta);
+    } else {
+      node.data('x', node.data('x') + 0.1 * delta);
+    }
+  }
+
+  removedFromNode(node: DataNode): void {
+  }
+  addedToNode(node: DataNode): void {
+  }
+
+
 }
 
 export class MatterCircleBody extends MatterBodyRole {
 
   private _radius: number;
-  private body: Matter.Body;
 
   get radius() {
     return this._radius;
@@ -62,11 +107,7 @@ export class MatterCircleBody extends MatterBodyRole {
     this._radius = radius;
   }
 
-  engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
-    this.body = Matter.Bodies.circle(this.x, this.y, this.radius);
-    Matter.World.add(engine.world, this.body);
-    console.log('circle body added to matter engine');
+  createBody(engine: Matter.Engine): Matter.Body {
+    return Matter.Bodies.circle(this.x, this.y, this.radius);
   }
-
-
 }
