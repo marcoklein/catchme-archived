@@ -2,9 +2,10 @@ import * as SocketIO from 'socket.io';
 import * as Express from 'express';
 import * as Path from 'path';
 import { NetworkController, Message } from '../engine/Network';
-import { World } from '../engine/World';
+import { World, WorldListener } from '../engine/World';
 import { ServerWorld } from './ServerWorld';
 import { ServerGameInterface } from './ServerMain';
+import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
 //const io = require('socket.io');
 
 
@@ -38,8 +39,38 @@ export namespace WorldMessages {
   }
 }
 
+
+class SyncWorldListener implements WorldListener, DataNodeListener {
+  private network: ServerNetworkController;
+
+  constructor(network: ServerNetworkController) {
+    this.network = network;
+  }
+
+  entityAdded(entity: DataNode) {
+    entity.addListener(this);
+  }
+
+  entityRemoved(entity: DataNode) {
+    entity.removeListener(this);
+  }
+
+  addedRoleToNode(role: Role, node: DataNode): void {
+  }
+
+  dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void {
+    this.network.io.emit('Data.U', { nodeId: node.data('id'), key: key, value: newValue });
+  }
+
+  dataDeleted(key: string, node: DataNode): void {
+    this.network.io.emit('Data.D', { nodeId: node.data('id'), key: key });
+  }
+
+
+}
+
 export class ServerNetworkController extends NetworkController {
-  private io: SocketIO.Server;
+  io: SocketIO.Server;
 
   private clientsById: any = {};
 
@@ -60,6 +91,7 @@ export class ServerNetworkController extends NetworkController {
     });
 
     this.registerWorldMessages();
+    this.initNodeDataChangeListener();
 
     //this.io.listen(port);
     console.log('SocketIO listening on port %i', port);
@@ -89,8 +121,14 @@ export class ServerNetworkController extends NetworkController {
     });
   }
 
+
   private registerWorldMessages() {
     this.registerMessage(WorldMessages.AddEntity.TYPE, WorldMessages.AddEntity);
+  }
+
+
+  private initNodeDataChangeListener() {
+    this.game.world.addListener(new SyncWorldListener(this));
   }
 
 

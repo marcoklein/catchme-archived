@@ -9,6 +9,7 @@ export interface WorldController {
 
 export interface WorldListener {
   entityAdded(entity: DataNode): any;
+  entityRemoved(entity: DataNode): any;
 }
 
 /**

@@ -80,8 +80,8 @@ export class SpriteRole extends PhaserRole {
   private syncWithNode(node: DataNode) {
     if (this._sprite === undefined) return;
     // sync location with parent node
-    node.data.set('x', this.sprite.x);
-    node.data.set('y', this.sprite.y);
+    node.data('x', this.sprite.x);
+    node.data('y', this.sprite.y);
   }
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {

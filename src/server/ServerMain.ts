@@ -37,6 +37,10 @@ export class ServerGame implements ServerGameInterface {
     Matter.World.add(this.engine.world, testBox);
     Matter.Engine.run(this.engine);
 
+    Matter.Events.on(this.engine, 'tick', () => {
+      console.log('tick');
+    });
+
     // init world and network
     this.world = new ServerWorld();
     this.network = new ServerNetworkController(4681, this);

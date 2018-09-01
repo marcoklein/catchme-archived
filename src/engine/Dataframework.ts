@@ -20,62 +20,13 @@ export interface Role {
   updateRole(delta: number, node: DataNode): void;
 }
 
-export interface DataListener {
-  dataUpdated(key: string, newValue: any, oldValue: any): void;
-  dataDeleted(key: string): void;
-}
-
-/**
- * Manages adding, updating and deleting of data.
- * A data listener can be attached to be informed about data updates.
- */
-export class Data {
-  private data: any;
-
-  private listeners: Array<DataListener> = [];
-
-  constructor() {
-    this.data = {};
-  }
-
-  get(key?: string) {
-    if (key === undefined) {
-      return this.data;
-    }
-    return this.data[key];
-  }
-  set(key: string, value: any) {
-    let oldValue = this.data[key];
-    this.data[key] = value;
-    this.listeners.forEach(listener => {
-      listener.dataUpdated(key, value, oldValue);
-    });
-  }
-  /**
-   * Delete data with given key.
-   */
-  delete(key: string) {
-    delete this.data[key];
-    this.listeners.forEach(listener => {
-      listener.dataDeleted(key);
-    });
-  }
-
-  /* Listeners */
-
-  addListener(listener: DataListener): void {
-    this.listeners.push(listener);
-  }
-  removeListener(listener: DataListener): void {
-    this.listeners.splice(this.listeners.indexOf(listener), 1);
-  }
-}
-
 /**
  * Listener gets informed about DataNode events.
  */
 export interface DataNodeListener {
   addedRoleToNode(role: Role, node: DataNode): void;
+  dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void;
+  dataDeleted(key: string, node: DataNode): void;
 }
 
 /**
@@ -83,7 +34,7 @@ export interface DataNodeListener {
  * Roles can be added to DataNodes.
  */
 export class DataNode {
-  readonly data: Data;
+  private _data: any;
 
   private listeners: Array<DataNodeListener> = [];
   private roles: any = {};
@@ -92,17 +43,46 @@ export class DataNode {
 
   private lastRoleId = 0;
 
-  constructor() {
-    this.data = new Data();
+  constructor(data?: any) {
+    this._data = data || {};
+  }
+
+  /* Data access */
+
+  /**
+   * Used to access data. data(key) will get data and data(key, value) sets data.
+   */
+  data(key?: string, value?: any) {
+    if (key === undefined && value === undefined) {
+      return this._data;
+    } else if (value === undefined) {
+      // get data with given key
+      return this._data[key];
+    }
+    let oldValue = this._data[key];
+    this._data[key] = value;
+    this.listeners.forEach(listener => {
+      listener.dataUpdated(key, value, oldValue, this);
+    });
+  }
+  /**
+   * Delete data with given key.
+   */
+  delete(key: string) {
+    delete this._data[key];
+    this.listeners.forEach(listener => {
+      listener.dataDeleted(key, this);
+    });
   }
 
   /* Listeners */
   addListener(listener: DataNodeListener): void {
     this.listeners.push(listener);
   }
-  /*removeListener(listener: DataNodeListener): void {
+
+  removeListener(listener: DataNodeListener): void {
     this.listeners.splice(this.listeners.indexOf(listener), 1);
-  }*/
+  }
 
   update(delta: number) {
     this.roles.forEach((role: Role) => {

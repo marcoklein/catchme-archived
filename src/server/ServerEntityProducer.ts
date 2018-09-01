@@ -6,8 +6,8 @@ import { MatterCircleBody } from './ServerRoles';
 export class PlayerProducer implements EntityProducer {
 
   produceEntity(type: string, data: Object): DataNode {
-    let node = new DataNode();
-    node.data.set('type', type);
+    let node = new DataNode(data);
+    //node.data('type', type);
 
     node.addRole(new MatterCircleBody(10, 10, 40));
 
