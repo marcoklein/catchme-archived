@@ -37,5 +37,6 @@ export class ClientWorld extends World {
         role.scene = this._gameScene;
       });
     }
+    // TODO add listener to entity to call phaser if new entity was added before
   }
 }
