@@ -121,13 +121,9 @@ export class SpriteRole extends PhaserRole {
 
 
   doInterpolation(delta: number) {
-    //console.log('time diff=%s', delta);
-    let x = this.destX;
-    let y = this.destY;
     // move entity to node position
     let interpolationProgress: number;
     //console.log('this update time before %s', this.updateTime);
-    this.updateTime += delta;
     //console.log('interpolation time: %s, delta: %s', this.updateTime, delta);
     if (this.updateTime > this.interpolationDelta) {
       this.updateTime = this.interpolationDelta;
@@ -153,6 +149,7 @@ export class SpriteRole extends PhaserRole {
     // move sprite to calculated position
     this._sprite.x = this.srcPos.x;
     this._sprite.y = this.srcPos.y;
+    this.updateTime += delta;
   }
 
 
@@ -160,7 +157,10 @@ export class SpriteRole extends PhaserRole {
     if (this._sprite) {
       // test if node position has changed
       if (this.destX !== this.node.data('x') || this.destY !== this.node.data('y')) {
-        this.startPos.set(this.destX, this.destY);
+        // TODO set start position of sprite hard if it moved too far away..
+        //this.startPos.set(this.destX, this.destY);
+        this.startPos.set(this._sprite.x, this._sprite.y);
+
         this.destX = this.node.data('x');
         this.destY = this.node.data('y');
         // position changed
