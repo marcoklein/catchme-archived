@@ -3,12 +3,11 @@ import { DataNode } from './Dataframework';
 
 export interface WorldUpdateData {
   worldChanges: {
-    addedEntities: {[id: string]: {[key: string]: any}},
-    removedEntitites: {[id: string]: {[key: string]: any}}
+    addedEntities: {[entityId: string]: {[key: string]: any}},
+    removedEntitites: {[entityId: string]: {[key: string]: any}}
   };
   entityChanges: {
-    updatedData:  {[id: string]: { key: string, value: any }},
-    deletedData:  {[id: string]: string}
+    updatedData:  {[entityId: string]: { key: string, value: any }}
   };
 }
 

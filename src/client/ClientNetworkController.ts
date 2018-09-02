@@ -102,13 +102,29 @@ export class ClientNetworkController extends NetworkController implements WorldC
   cleanup(world: World) {
   }
 
-  applyWorldChanges(changes: WorldUpdateData) {
+  /**
+   * Called as an update world message is recieved through socket io.
+   */
+  private applyWorldChanges(changes: WorldUpdateData) {
     let world = this.game.world;
     // apply added entities
     for (let key in changes.worldChanges.addedEntities) {
       let data = changes.worldChanges.addedEntities[key];
       console.log('world update: adding entity', data);
       world.addEntity(world.entityFactory.produceFromType(data.type, data));
+    }
+    // apply data changes
+    for (let entityId in changes.entityChanges.updatedData) {
+      let data = changes.entityChanges.updatedData[entityId];
+      world.getEntityById(entityId).data(data.key, data.value);
+    }
+
+    // remove entities at the end because data changes might affect removed entities
+    for (let key in changes.worldChanges.removedEntitites) {
+      let data = changes.worldChanges.removedEntitites[key];
+      console.error('Removal of entities not yet supported.');
+      // TODO implement entity removal
+      //world.removeEntity();
     }
   }
 

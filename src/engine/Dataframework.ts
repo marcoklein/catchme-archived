@@ -26,7 +26,7 @@ export interface Role {
 export interface DataNodeListener {
   addedRoleToNode(role: Role, node: DataNode): void;
   dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void;
-  dataDeleted(key: string, node: DataNode): void;
+  //dataDeleted(key: string, node: DataNode): void;
 }
 
 /**
@@ -70,13 +70,16 @@ export class DataNode {
   }
   /**
    * Delete data with given key.
+   * FIXME deletion is not supported because of synchronization issues
+   * data may have been updated and then deleted but don't know when
+   * use data(key, undefined) instead
    */
-  delete(key: string) {
+  /*delete(key: string) {
     delete this._data[key];
     this.listeners.forEach(listener => {
       listener.dataDeleted(key, this);
     });
-  }
+  }*/
 
   /* Listeners */
   addListener(listener: DataNodeListener): void {

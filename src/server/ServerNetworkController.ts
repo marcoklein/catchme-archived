@@ -59,8 +59,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
         removedEntitites: {}
       },
       entityChanges: {
-        updatedData: {},
-        deletedData: {}
+        updatedData: {}
       }
     };
   }
@@ -92,12 +91,6 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
     // cache change
     this.changes.entityChanges.updatedData[entity.data('id')] = { key: key, value: newValue };
   }
-
-  dataDeleted(key: string, entity: DataNode): void {
-    // cache change
-    this.changes.entityChanges.deletedData[entity.data('id')] = key;
-  }
-
 
 }
 
