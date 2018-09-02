@@ -1,6 +1,6 @@
-/**
- * The server uses Matter.js to simulate physics on the server.
- */
+ // fix for matterjs -> accesses window variable
+ (<any> global).window = {};
+
 import * as Matter from 'matter-js'
 
 import { ServerWorld } from './ServerWorld';
@@ -9,12 +9,18 @@ import { WorldListener } from '../engine/World';
 import { DataNode } from '../engine/Dataframework';
 import { MatterRole } from './ServerRoles';
 
+/**
+ * Basic requirements for a ServerGame.
+ */
 export interface ServerGameInterface {
   network: ServerNetworkController,
   world: ServerWorld,
   engine: Matter.Engine
 }
 
+/**
+ * The server uses Matter.js to simulate physics on the server.
+ */
 export class ServerGame implements ServerGameInterface {
   world: ServerWorld;
   network: ServerNetworkController;

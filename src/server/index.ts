@@ -7,8 +7,6 @@ import * as Path from 'path';
 
 import { ServerGame } from './ServerMain';
 
-// fix for matterjs
-(<any>global).window = {};
 
 let game = new ServerGame();
 
