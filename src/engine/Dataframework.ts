@@ -34,7 +34,7 @@ export interface DataNodeListener {
  * Roles can be added to DataNodes.
  */
 export class DataNode {
-  private _data: any;
+  private _data: {[key: string]: Object};
 
   private listeners: Array<DataNodeListener> = [];
   private roles: any = {};
@@ -52,7 +52,7 @@ export class DataNode {
   /**
    * Used to access data. data(key) will get data and data(key, value) sets data.
    */
-  data(key?: string, value?: any) {
+  data(key?: string, value?: Object): {[key: string]: Object} | any {
     if (key === undefined && value === undefined) {
       return this._data;
     } else if (value === undefined) {

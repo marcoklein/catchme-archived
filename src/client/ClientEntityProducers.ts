@@ -6,10 +6,10 @@ import * as ClientRoles from "./ClientRoles";
 
 export class PlayerProducer implements EntityProducer {
   produceEntity(type: string, data: any): DataNode {
-    let node = new DataNode();
+    let node = new DataNode(data);
 
     node.addRole(new ClientRoles.PlayerControl());
-    node.addRole(new Roles.SpriteRole(data.x, data.y, data.image));
+    node.addRole(new Roles.SpriteRole());
 
     return node;
   }

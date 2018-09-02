@@ -51,8 +51,17 @@ export class ServerGame implements ServerGameInterface {
 
     // listen to update events and update
     let lastTimestamp = 0;
+    let lastNetworkSync = 0;
+    let networkSyncInterval = 100;
     Matter.Events.on(this.engine, 'tick', event => {
-      this.world.update(event.timestamp - lastTimestamp);
+      let delta = event.timestamp - lastTimestamp;
+      this.world.update(delta);
+      lastNetworkSync -= delta;
+      if (lastNetworkSync <= 0) {
+        lastNetworkSync = networkSyncInterval;
+        this.network.worldSynchronizer.sendChanges();
+      }
+
       lastTimestamp = event.timestamp;
     });
 

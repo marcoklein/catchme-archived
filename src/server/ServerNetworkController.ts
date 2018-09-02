@@ -1,7 +1,7 @@
 import * as SocketIO from 'socket.io';
 import * as Express from 'express';
 import * as Path from 'path';
-import { NetworkController, Message } from '../engine/Network';
+import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
 import { World, WorldListener } from '../engine/World';
 import { ServerWorld } from './ServerWorld';
 import { ServerGameInterface } from './ServerMain';
@@ -40,32 +40,62 @@ export namespace WorldMessages {
 }
 
 
-class SyncWorldListener implements WorldListener, DataNodeListener {
+class WorldSynchronizer implements WorldListener, DataNodeListener {
   private network: ServerNetworkController;
+
+
+  // only the latest world state is distrbuted to clients
+  private changes: WorldUpdateData;
 
   constructor(network: ServerNetworkController) {
     this.network = network;
+    this.resetChanges();
+  }
+
+  private resetChanges() {
+    this.changes = {
+      worldChanges: {
+        addedEntities: {},
+        removedEntitites: {}
+      },
+      entityChanges: {
+        updatedData: {},
+        deletedData: {}
+      }
+    };
+  }
+
+  sendChanges() {
+    // TODO send bulk message (message containing array)
+    // inform clients about added entities
+    this.network.io.emit('WorldUpdate', this.changes);
+
+    this.resetChanges();
   }
 
   entityAdded(entity: DataNode) {
-    // inform clients
-    this.network.io.emit('message', { type: 'WM.AE', data: { type: entity.data('type'), data: entity.data()}});
+    // cache change
+    this.changes.worldChanges.addedEntities[entity.data('id')] = entity.data();
+    // listen to data changes of entity
     entity.addListener(this);
   }
 
   entityRemoved(entity: DataNode) {
+    this.changes.worldChanges.removedEntitites[entity.data('id')] = entity.data();
     entity.removeListener(this);
   }
 
   addedRoleToNode(role: Role, node: DataNode): void {
   }
 
-  dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void {
-    this.network.io.emit('message', { type: 'Data.U', data: { nodeId: node.data('id'), key: key, value: newValue }});
+  dataUpdated(key: string, newValue: any, oldValue: any, entity: DataNode): void {
+    // cache change
+    this.changes.entityChanges.updatedData[entity.data('id')] = { key: key, value: newValue };
   }
 
-  dataDeleted(key: string, node: DataNode): void {
-    this.network.io.emit('message', { type: 'Data.D', data: { nodeId: node.data('id'), key: key }});
+  dataDeleted(key: string, entity: DataNode): void {
+    // cache change
+    this.changes.entityChanges.deletedData[entity.data('id')] = key;
   }
 
 
@@ -76,6 +106,7 @@ export class ServerNetworkController extends NetworkController {
 
   private clientsById: any = {};
 
+  worldSynchronizer: WorldSynchronizer = new WorldSynchronizer(this);
   game: ServerGameInterface;
 
   constructor(port: number, game: ServerGameInterface) {
@@ -129,7 +160,7 @@ export class ServerNetworkController extends NetworkController {
 
 
   private initNodeDataChangeListener() {
-    this.game.world.addListener(new SyncWorldListener(this));
+    this.game.world.addListener(this.worldSynchronizer);
   }
 
 

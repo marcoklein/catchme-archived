@@ -86,7 +86,7 @@ export class SpriteRole extends PhaserRole {
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
-    this._sprite = this._scene.add.sprite(200, 200, 'test-sprite');
+    this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
     //this._sprite = this._scene.add.sprite(this.initX, this.initY, this.initImage);
   }
 

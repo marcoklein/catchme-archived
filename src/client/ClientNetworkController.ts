@@ -1,5 +1,5 @@
 import * as SocketIOClient from 'socket.io-client';
-import { NetworkController, Message } from '../engine/Network';
+import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
 import { World, WorldController, WorldListener } from '../engine/World';
 import { ClientWorld } from './ClientWorld';
 import { ClientGameInterface } from './ClientMain';
@@ -64,6 +64,9 @@ export class ClientNetworkController extends NetworkController implements WorldC
     this.socket.on('player.entityId', (entityId: string) => {
       this.setEntityId(entityId);
     });
+    this.socket.on('WorldUpdate', (changes: any) => {
+      this.applyWorldChanges(changes);
+    });
 
     this.registerWorldMessages();
   }
@@ -99,7 +102,15 @@ export class ClientNetworkController extends NetworkController implements WorldC
   cleanup(world: World) {
   }
 
-
+  applyWorldChanges(changes: WorldUpdateData) {
+    let world = this.game.world;
+    // apply added entities
+    for (let key in changes.worldChanges.addedEntities) {
+      let data = changes.worldChanges.addedEntities[key];
+      console.log('world update: adding entity', data);
+      world.addEntity(world.entityFactory.produceFromType(data.type, data));
+    }
+  }
 
   onConnect() {
     console.log('Connected to server!');
@@ -109,7 +120,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
     console.log('Recieved event!', message);
     if (message.type === WorldMessages.AddEntity.TYPE) {
       console.log('Recieved add entity message!');
-      new WorldMessages.AddEntity(message.data).apply(message.data, this.game.world);
+      //new WorldMessages.AddEntity(message.data).apply(message.data, this.game.world);
     } else if (message.type === 'Handshake') {
       console.log('Recieved Handshake message:' + message.data);
       this.clientId = message.data.clientId;
