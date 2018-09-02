@@ -40,6 +40,8 @@ export class ServerGame implements ServerGameInterface {
   private init() {
     // init matter
     this.engine = Matter.Engine.create();
+    this.engine.world.gravity.x = 0;
+    this.engine.world.gravity.y = 0;
 
     // init world and network
     this.world = new ServerWorld();
