@@ -137,9 +137,6 @@ export class SpriteRole extends PhaserRole {
       interpolationProgress = this.updateTime / this.interpolationDelta;
       //console.log('interpolation progress: %s', interpolationProgress);
     }
-    if ((interpolationProgress * 1000) % 10 === 0) {
-      console.log('interpolation progress: %s', interpolationProgress);
-    }
     this.srcPos.copy(this.startPos);
     //this.destPos.set(this.destX, this.destY);
     //console.log('from (%s,%s) to (%s,%s)', this.srcPos.x, this.srcPos.y, this.destPos.x, this.destPos.y);
