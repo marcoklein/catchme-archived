@@ -43,6 +43,9 @@ export class SpriteRole extends PhaserRole {
   private initY: number;
   private initImage: string;
 
+  width: number;
+  height: number;
+
 
   id: string;
   name: string = 'Sprite';
@@ -89,6 +92,10 @@ export class SpriteRole extends PhaserRole {
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
     this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
+    if (this._sprite.width && this._sprite.height) {
+      this._sprite.setDisplaySize(this.width, this.height);
+    }
+
     this.destX = this.node.data('x');
     this.destY = this.node.data('y');
   }
@@ -109,7 +116,7 @@ export class SpriteRole extends PhaserRole {
   // for how many ms interpolation is already running
   private updateTime: number = 0;
   // number of ms the interpolation needs (set to server default)
-  private interpolationDelta: number = 5000;
+  private interpolationDelta: number = 100;
   private destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
   private srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
 

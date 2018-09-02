@@ -89,6 +89,7 @@ export class MatterCircleBody extends PhysicsRole {
   }
 
   createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
+    this.node.data('radius', this.radius);
     return Matter.Bodies.circle(this.initX, this.initY, this.radius, { restitution: 1, friction: 1});
   }
 }

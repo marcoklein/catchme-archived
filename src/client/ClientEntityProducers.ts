@@ -19,7 +19,11 @@ export class PlayerProducer implements EntityProducer {
     let node = new DataNode(data);
 
     node.addRole(new ClientRoles.PlayerControl());
-    node.addRole(new ClientRoles.SpriteRole());
+    let spriteRole = new ClientRoles.SpriteRole();
+    spriteRole.width = data.radius / 2;
+    spriteRole.height = data.radius / 2;
+    node.addRole(spriteRole);
+
 
     return node;
   }

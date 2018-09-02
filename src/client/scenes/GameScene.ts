@@ -26,6 +26,7 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
 
   preload(): void {
     this.load.image('test-sprite', 'assets/images/sprite.png');
+    this.load.image('characterBlue', 'assets/images/characterBlue.png');
   }
 
   create(): void {
