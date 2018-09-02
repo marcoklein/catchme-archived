@@ -62,7 +62,7 @@ export class DataNode {
     let oldValue = this._data[key];
     this._data[key] = value;
     if (value !== oldValue) {
-      console.log('updated value: key=%s, value=%s of entity id %s', key, value, this.data('id'));
+      //console.log('updated value: key=%s, value=%s of entity id %s', key, value, this.data('id'));
       this.listeners.forEach(listener => {
         listener.dataUpdated(key, value, oldValue, this);
       });
