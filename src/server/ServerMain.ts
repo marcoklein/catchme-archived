@@ -41,10 +41,6 @@ export class ServerGame implements ServerGameInterface {
     // init matter
     this.engine = Matter.Engine.create();
 
-    let testBox = Matter.Bodies.rectangle(400, 200, 80, 80);
-    Matter.World.add(this.engine.world, testBox);
-
-
     // init world and network
     this.world = new ServerWorld();
     this.network = new ServerNetworkController(4681, this);
@@ -54,6 +50,7 @@ export class ServerGame implements ServerGameInterface {
     let lastNetworkSync = 0;
     let networkSyncInterval = 100;
     Matter.Events.on(this.engine, 'tick', event => {
+      // update game
       let delta = event.timestamp - lastTimestamp;
       this.world.update(delta);
       lastNetworkSync -= delta;
@@ -78,7 +75,6 @@ export class ServerGame implements ServerGameInterface {
         entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
           role.engine = self.engine;
         });
-
       }
     });
   }

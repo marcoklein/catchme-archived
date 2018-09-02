@@ -87,22 +87,41 @@ export class SpriteRole extends PhaserRole {
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
     this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
-    //this._sprite = this._scene.add.sprite(this.initX, this.initY, this.initImage);
   }
 
   addedToNode(node: DataNode): void {
+    // TODO set data of node (initx, inity, image);
     this.syncWithNode(node);
   }
 
   removedFromNode(node: DataNode): void {
   }
 
+  lastPositionUpdate: number = 0;
+  destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+  srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
   updateRole(delta: number, node: DataNode): void {
-    // move entity to node position
     if (this._sprite) {
-      // TODO add data listener and listen to updates of x and y
-      this._sprite.x = node.data('x');
-      this._sprite.y = node.data('y');
+      // test if position has changed
+      let x = this.node.data('x');
+      let y = this.node.data('y');
+      if (this._sprite.x !== x || this._sprite.y !== y) {
+        // position changed
+        // should interpolation be used?
+        if (!this.node.data('posSet')) {
+          // move entity to node position
+          // use interpolation if delta la
+          //this.srcPos.set(this._sprite.x, this._sprite.y);
+          //this.destPos.set(x, y);
+          this._sprite.x = node.data('x');
+          this._sprite.y = node.data('y');
+        } else {
+          // set position
+          this._sprite.x = node.data('x');
+          this._sprite.y = node.data('y');
+        }
+      }
+
     }
   }
 

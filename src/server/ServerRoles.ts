@@ -30,65 +30,45 @@ export abstract class MatterRole implements Role {
   }
 }
 
-export abstract class MatterBodyRole extends MatterRole {
-  x: number;
-  y: number;
+export abstract class PhysicsRole extends MatterRole {
+  initX: number;
+  initY: number;
 
   body: Matter.Body;
 
   constructor(x: number, y: number) {
     super();
-    this.x = x;
-    this.y = y;
+    this.initX = x;
+    this.initY = y;
+  }
+
+  get x() {
+    return this.node.data('x');
+  }
+
+  get y() {
+    return this.node.data('y');
   }
 
 
   engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
-    this.body = this.createBody(engine);
+    this.body = this.createBody(this.initX, this.initY, engine);
     Matter.World.add(engine.world, this.body);
     // set initial position
-    this.node.data('x', this.x);
-    this.node.data('y', this.y);
+    this.node.data('x', this.initX);
+    this.node.data('y', this.initY);
   }
 
-  abstract createBody(engine: Matter.Engine): Matter.Body
+  abstract createBody(x: number, y: number, engine: Matter.Engine): Matter.Body
 
   updateRole(delta: number, node: DataNode): void {
-
+    // sync x and y with node
+    this.node.data('x', this.body.position.x);
+    this.node.data('y', this.body.position.y);
   }
 }
 
-export class ShakyRole implements Role {
-  node: DataNode;
-  id: string;
-
-  leftRight: boolean = false;
-
-  get name() {
-    return 'ShakyRole';
-  }
-
-  updateRole(delta: number, node: DataNode): void {
-    if (node.data('x') === undefined || node.data('y') === undefined) {
-      return;
-    }
-    console.log('updated');
-    if (this.leftRight) {
-      node.data('x', node.data('x') - 0.1 * delta);
-    } else {
-      node.data('x', node.data('x') + 0.1 * delta);
-    }
-  }
-
-  removedFromNode(node: DataNode): void {
-  }
-  addedToNode(node: DataNode): void {
-  }
-
-
-}
-
-export class MatterCircleBody extends MatterBodyRole {
+export class MatterCircleBody extends PhysicsRole {
 
   private _radius: number;
 
@@ -107,7 +87,43 @@ export class MatterCircleBody extends MatterBodyRole {
     this._radius = radius;
   }
 
-  createBody(engine: Matter.Engine): Matter.Body {
-    return Matter.Bodies.circle(this.x, this.y, this.radius);
+  createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
+    return Matter.Bodies.circle(this.initX, this.initY, this.radius);
   }
+}
+
+/**
+ * Moves body to right and left.
+ * Depends on PhysicsRole.
+ */
+export class ShakyRole implements Role {
+  node: DataNode;
+  id: string;
+
+  leftRight: boolean = false;
+
+  get name() {
+    return 'ShakyRole';
+  }
+
+  updateRole(delta: number, node: DataNode): void {
+    let physicsRole: PhysicsRole = node.getRoleByClass(PhysicsRole);
+    if (physicsRole === undefined) {
+      return;
+    }
+
+    if (this.leftRight) {
+      Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(-1, 0));
+    } else {
+      Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(1, 0));
+      //node.data('x', node.data('x') + 0.1 * delta);
+    }
+  }
+
+  removedFromNode(node: DataNode): void {
+  }
+  addedToNode(node: DataNode): void {
+  }
+
+
 }

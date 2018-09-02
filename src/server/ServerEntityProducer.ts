@@ -14,7 +14,7 @@ export class PlayerProducer implements EntityProducer {
     let node = new DataNode(data);
     //node.data('type', type);
 
-    node.addRole(new MatterCircleBody(10, 10, 40));
+    node.addRole(new MatterCircleBody(200, 200, 40));
     node.addRole(new ShakyRole());
 
     return node;

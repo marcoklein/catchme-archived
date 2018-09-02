@@ -103,9 +103,8 @@ export class ServerNetworkController extends NetworkController {
 
     // create player for client
     let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
+    // tell client, that this is his entity so he can control it
     this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
-
-    // send simple sprite
 
     socket.on('event', data => {
       console.log('Recieved an event!', data);

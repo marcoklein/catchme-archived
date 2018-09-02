@@ -62,7 +62,7 @@ export class DataNode {
     let oldValue = this._data[key];
     this._data[key] = value;
     if (value !== oldValue) {
-      console.log('updated value: key=%s, value=%s', key, value);
+      console.log('updated value: key=%s, value=%s of entity id %d', key, value, this.data('id'));
       this.listeners.forEach(listener => {
         listener.dataUpdated(key, value, oldValue, this);
       });
@@ -117,12 +117,22 @@ export class DataNode {
   getRoleByName(name: string): Role {
     let roles = this.rolesByName[name];
     if (!roles || roles.length === 0) {
-      return null;
+      return undefined;
     }
     return roles[0];
   }
   getRolesByName(name: string): Array<Role> {
     return this.rolesByName[name];
+  }
+
+  // TODO optimization for role by class: store clazz calls and results? -> remove cached when role is removed
+  getRoleByClass<T extends Role>(clazz: Function): T {
+    this.roleArray.forEach(role => {
+      if (role instanceof clazz) {
+        return role;
+      }
+    });
+    return undefined;
   }
 
   getRolesByClass(clazz: Function): Array<Role> {
