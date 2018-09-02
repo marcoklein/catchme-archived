@@ -82,6 +82,8 @@ export class SpriteRole extends PhaserRole {
     // sync location with parent node
     node.data('x', this.sprite.x);
     node.data('y', this.sprite.y);
+    this.lastX = this.sprite.x;
+    this.lastY = this.sprite.y;
   }
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
@@ -97,31 +99,55 @@ export class SpriteRole extends PhaserRole {
   removedFromNode(node: DataNode): void {
   }
 
-  lastPositionUpdate: number = 0;
-  destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
-  srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+  // for how many ms interpolation is already running
+  private updateTime: number = 0;
+  // number of ms the interpolation needs (set to server default)
+  private interpolationDelta: number = 100;
+  private destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+  private srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+
+  // store positions before interpolation to detect position changes
+  private lastX: number;
+  private lastY: number;
+
+  doInterpolation(delta: number) {
+    let x = this.lastX;
+    let y = this.lastY;
+    // move entity to node position
+    let interpolationProgress: number;
+    this.updateTime += delta;
+    if (this.updateTime > this.interpolationDelta) {
+      this.updateTime = this.interpolationDelta;
+    } else {
+      interpolationProgress = this.updateTime / this.interpolationDelta;
+    }
+    this.srcPos.set(this._sprite.x, this._sprite.y);
+    this.destPos.set(x, y);
+    this.srcPos.lerp(this.destPos, interpolationProgress);
+
+    // move sprite to calculated position
+    this._sprite.x = this.srcPos.x;
+    this._sprite.y = this.srcPos.y;
+  }
+
   updateRole(delta: number, node: DataNode): void {
     if (this._sprite) {
-      // test if position has changed
-      let x = this.node.data('x');
-      let y = this.node.data('y');
-      if (this._sprite.x !== x || this._sprite.y !== y) {
+      // test if node position has changed
+      if (this.lastX !== this.node.data('x') || this.lastY !== this.node.data('y')) {
         // position changed
         // should interpolation be used?
-        if (!this.node.data('posSet')) {
-          // move entity to node position
-          // use interpolation if delta la
-          //this.srcPos.set(this._sprite.x, this._sprite.y);
-          //this.destPos.set(x, y);
-          this._sprite.x = node.data('x');
-          this._sprite.y = node.data('y');
+        if (this.node.data('interpolate') == true) {
+          // start new interpolation
+          this.updateTime = 0;
+          this.doInterpolation(delta);
         } else {
-          // set position
-          this._sprite.x = node.data('x');
-          this._sprite.y = node.data('y');
+          // set position without interpolation
+          this.syncWithNode(node);
         }
+      } else if (this.updateTime > 0) {
+        // update ongoing interpolation
+        this.doInterpolation(delta);
       }
-
     }
   }
 

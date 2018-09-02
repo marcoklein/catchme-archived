@@ -4,11 +4,12 @@
 # Server
 Server-side code is located in *src/server/*.
 
-## Network Synchronizations
+## Network Synchronization
 The ServerNetworkController synchronizes server side world changes to the client.
 Changes are detected using a world listener and distributed after a defined interval.
 Changes are not sent directly after they happend but rather cached to not overload the network and client with messages.
 
+## Interpolation
 
 
 # Development

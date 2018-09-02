@@ -65,6 +65,7 @@ export abstract class PhysicsRole extends MatterRole {
     // sync x and y with node
     this.node.data('x', this.body.position.x);
     this.node.data('y', this.body.position.y);
+    this.node.data('interpolate', true);
   }
 }
 
