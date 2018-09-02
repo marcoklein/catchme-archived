@@ -82,69 +82,107 @@ export class SpriteRole extends PhaserRole {
     // sync location with parent node
     node.data('x', this.sprite.x);
     node.data('y', this.sprite.y);
-    this.lastX = this.sprite.x;
-    this.lastY = this.sprite.y;
+    this.destX = this.sprite.x;
+    this.destY = this.sprite.y;
   }
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
     this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
+    this.destX = this.node.data('x');
+    this.destY = this.node.data('y');
   }
 
   addedToNode(node: DataNode): void {
     // TODO set data of node (initx, inity, image);
     this.syncWithNode(node);
+    if (this._sprite) {
+      this._sprite.x = this.node.data('x');
+      this._sprite.y = this.node.data('y');
+    }
   }
 
   removedFromNode(node: DataNode): void {
   }
 
+  private interpolating: boolean = false;
   // for how many ms interpolation is already running
   private updateTime: number = 0;
   // number of ms the interpolation needs (set to server default)
-  private interpolationDelta: number = 100;
+  private interpolationDelta: number = 5000;
   private destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
   private srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
 
   // store positions before interpolation to detect position changes
-  private lastX: number;
-  private lastY: number;
+  private destX: number;
+  private destY: number;
+
+  private startPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+
 
   doInterpolation(delta: number) {
-    let x = this.lastX;
-    let y = this.lastY;
+    //console.log('time diff=%s', delta);
+    let x = this.destX;
+    let y = this.destY;
     // move entity to node position
     let interpolationProgress: number;
+    //console.log('this update time before %s', this.updateTime);
     this.updateTime += delta;
+    //console.log('interpolation time: %s, delta: %s', this.updateTime, delta);
     if (this.updateTime > this.interpolationDelta) {
       this.updateTime = this.interpolationDelta;
+      interpolationProgress = 1;
+      this.interpolating = false;
     } else {
       interpolationProgress = this.updateTime / this.interpolationDelta;
+      //console.log('interpolation progress: %s', interpolationProgress);
     }
-    this.srcPos.set(this._sprite.x, this._sprite.y);
-    this.destPos.set(x, y);
+    if ((interpolationProgress * 1000) % 10 === 0) {
+      console.log('interpolation progress: %s', interpolationProgress);
+    }
+    this.srcPos.copy(this.startPos);
+    //this.destPos.set(this.destX, this.destY);
+    //console.log('from (%s,%s) to (%s,%s)', this.srcPos.x, this.srcPos.y, this.destPos.x, this.destPos.y);
+    //this.destPos.subtract(this.srcPos).scale(interpolationProgress).add(this.srcPos);
     this.srcPos.lerp(this.destPos, interpolationProgress);
+    //console.log('after(%s,%s)', this.destPos.x, this.destPos.y);
+
+    //console.log('diff: %s', (this.destPos.x - this.srcPos.x));
+    //console.log('inte: %s', ((this.destPos.x - this.srcPos.x) * interpolationProgress));
+    //this.srcPos.x = (this.destPos.x - this.srcPos.x) * interpolationProgress + this.srcPos.x;
+    //this.srcPos.x = this.srcPos.x * interpolationProgress + this.destPos.x * (1 - interpolationProgress);
+    //console.log('x interpol: %s, %s', this.srcPos.x, 1 - interpolationProgress);
 
     // move sprite to calculated position
     this._sprite.x = this.srcPos.x;
     this._sprite.y = this.srcPos.y;
   }
 
+
   updateRole(delta: number, node: DataNode): void {
     if (this._sprite) {
       // test if node position has changed
-      if (this.lastX !== this.node.data('x') || this.lastY !== this.node.data('y')) {
+      if (this.destX !== this.node.data('x') || this.destY !== this.node.data('y')) {
+        this.startPos.set(this.destX, this.destY);
+        this.destX = this.node.data('x');
+        this.destY = this.node.data('y');
         // position changed
         // should interpolation be used?
         if (this.node.data('interpolate') == true) {
+          this.interpolating = true;
           // start new interpolation
           this.updateTime = 0;
+          this.destPos.set(this.destX, this.destY);
+          this.srcPos.set(this._sprite.x, this._sprite.y);
           this.doInterpolation(delta);
         } else {
+          this.interpolating = false;
           // set position without interpolation
+          this._sprite.x = this.node.data('x');
+          this._sprite.y = this.node.data('y');
           this.syncWithNode(node);
         }
-      } else if (this.updateTime > 0) {
+      } else if (this.interpolating === true) {
         // update ongoing interpolation
         this.doInterpolation(delta);
       }

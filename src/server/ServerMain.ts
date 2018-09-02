@@ -40,9 +40,9 @@ export class ServerGame implements ServerGameInterface {
   private init() {
     // init matter
     this.engine = Matter.Engine.create();
-    this.engine.world.gravity.x = 0;
-    this.engine.world.gravity.y = 0;
-    this.engine.world.bounds = Matter.Bounds.create([{min: 0, max: 0}, {min: 600, max: 600}]);
+    this.engine.world.gravity.x = 0.01;
+    this.engine.world.gravity.y = 0.00;
+
 
     // init world and network
     this.world = new ServerWorld();
@@ -51,7 +51,7 @@ export class ServerGame implements ServerGameInterface {
     // listen to update events and update
     let lastTimestamp = 0;
     let lastNetworkSync = 0;
-    let networkSyncInterval = 100;
+    let networkSyncInterval = 5000;
     Matter.Events.on(this.engine, 'tick', event => {
       // update game
       let delta = event.timestamp - lastTimestamp;

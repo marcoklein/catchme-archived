@@ -97,13 +97,17 @@ export class ServerNetworkController extends NetworkController {
     socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
     // TODO for safety: wait until handshake message has been recieved by client
 
+
     // send initial world data
     socket.emit('WorldUpdate', {
       addedEntities: this.game.world.getEntitiesData()
     });
 
+
     // create player for client
     let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
+
+
     // tell client, that this is his entity so he can control it
     this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
 
