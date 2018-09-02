@@ -2,13 +2,19 @@ import { DataNode } from './Dataframework';
 
 
 export interface WorldUpdateData {
-  worldChanges: {
-    addedEntities: {[entityId: string]: {[key: string]: any}},
-    removedEntitites: {[entityId: string]: {[key: string]: any}}
-  };
-  entityChanges: {
-    updatedData:  {[entityId: string]: { key: string, value: any }}
-  };
+  /**
+   * Array of data of added entities.
+   */
+  addedEntities?: Array<{[key: string]: any}>,
+  /**
+   * Array of id of removed entities.
+   */
+  removedEntitites?: Array<string>
+  /**
+   * Array of updates of entities.
+   * key and value of updated value are given.
+   */
+  updatedData?: Array<{ entityId: string, key: string, value: any }>
 }
 
 /**

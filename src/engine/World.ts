@@ -1,5 +1,6 @@
 import { EntityFactory } from './EntityFactory'
 import { DataNode, DataNodeListener } from './Dataframework'
+import * as _ from 'underscore'
 
 export interface WorldController {
   initialize(world: World): any;
@@ -46,6 +47,12 @@ export abstract class World {
     return this._entitiesById[id];
   }
 
+  getEntitiesData(): {[id: string]: any} {
+    return _.map(this._entities, (entity: DataNode) => {
+      return entity.data();
+    });
+  }
+
   /**
    * Adds given Entity to World.
    */
@@ -85,6 +92,14 @@ export abstract class World {
     this.entityAdded(entity);
 
     return id;
+  }
+
+  removeEntityById(id: string) {
+    this.removeEntity(null);
+  }
+
+  removeEntity(entity: DataNode) {
+    throw new Error('Function not implemented yet.');
   }
 
   update(delta: number) {

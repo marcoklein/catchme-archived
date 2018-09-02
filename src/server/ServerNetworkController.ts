@@ -23,13 +23,9 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
 
   private resetChanges() {
     this.changes = {
-      worldChanges: {
-        addedEntities: {},
-        removedEntitites: {}
-      },
-      entityChanges: {
-        updatedData: {}
-      }
+      addedEntities: [],
+      removedEntitites: [],
+      updatedData: []
     };
   }
 
@@ -43,13 +39,13 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
 
   entityAdded(entity: DataNode) {
     // cache change
-    this.changes.worldChanges.addedEntities[entity.data('id')] = entity.data();
+    this.changes.addedEntities.push(entity.data());
     // listen to data changes of entity
     entity.addListener(this);
   }
 
   entityRemoved(entity: DataNode) {
-    this.changes.worldChanges.removedEntitites[entity.data('id')] = entity.data();
+    this.changes.removedEntitites.push(entity.data());
     entity.removeListener(this);
   }
 
@@ -58,7 +54,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
 
   dataUpdated(key: string, newValue: any, oldValue: any, entity: DataNode): void {
     // cache change
-    this.changes.entityChanges.updatedData[entity.data('id')] = { key: key, value: newValue };
+    this.changes.updatedData.push({ entityId: entity.data('id'), key: key, value: newValue });
   }
 
 }
@@ -100,6 +96,11 @@ export class ServerNetworkController extends NetworkController {
 
     socket.emit('message', { type: 'Handshake', data: { clientId: socket.id, version: 1 }});
     // TODO for safety: wait until handshake message has been recieved by client
+
+    // send initial world data
+    socket.emit('WorldUpdate', {
+      addedEntities: this.game.world.getEntitiesData()
+    });
 
     // create player for client
     let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
