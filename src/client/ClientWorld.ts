@@ -1,10 +1,8 @@
 import { World } from '../engine/World'
 import { DataNode } from '../engine/Dataframework'
 import { EntityFactory } from '../engine/EntityFactory'
-import { SimpleSpriteProducer } from '../game/EntityProducers'
-import { ClientGameInterface } from './ClientMain'
-import { PhaserRole, SpriteRole } from '../game/Roles'
-import { PlayerProducer } from './ClientEntityProducers'
+import { PlayerProducer, SimpleSpriteProducer } from './ClientEntityProducers'
+import { PhaserRole } from './ClientRoles';
 
 /**
  * Extends basic World with client specific behaviors and properties.
