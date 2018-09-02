@@ -73,7 +73,6 @@ export class ClientNetworkController extends NetworkController implements WorldC
     // apply added entities
     for (let key in changes.worldChanges.addedEntities) {
       let data = changes.worldChanges.addedEntities[key];
-      console.log('world update: adding entity', data);
       world.addEntity(world.entityFactory.produceFromType(data.type, data));
     }
     // apply data changes

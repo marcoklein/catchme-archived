@@ -5,7 +5,7 @@ import * as ClientRoles from "./ClientRoles";
 
 export class SimpleSpriteProducer implements EntityProducer {
   produceEntity(type: string, data: any): DataNode {
-    let node = new DataNode();
+    let node = new DataNode(data);
 
     node.addRole(new ClientRoles.SpriteRole(data.x, data.y, data.image));
 

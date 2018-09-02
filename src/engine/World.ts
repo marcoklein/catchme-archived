@@ -1,5 +1,5 @@
 import { EntityFactory } from './EntityFactory'
-import { DataNode } from './Dataframework'
+import { DataNode, DataNodeListener } from './Dataframework'
 
 export interface WorldController {
   initialize(world: World): any;
@@ -23,6 +23,8 @@ export abstract class World {
   private _controllers: Array<WorldController> = [];
   private _listeners: Array<WorldListener> = [];
 
+  private lastEntityId: number = 0;
+
   get entityFactory() {
     return this._entityFactory;
   }
@@ -44,7 +46,23 @@ export abstract class World {
     return this._entitiesById[id];
   }
 
-  addEntity(entity: DataNode, id?: string) {
+  /**
+   * Adds given Entity to World.
+   */
+  addEntity(entity: DataNode): string {
+    // test if entity has already been added
+    let id: string = entity.data('id');
+    if (id && this._entitiesById[id]) {
+      console.error('Could not add Entity with id %s because it has already been added.', id);
+      return;
+    }
+
+    // be sure an id is provided
+    id = id || this.generateNewEntityId();
+
+    // be sure id is set
+    entity.data('id', id);
+
     this._entitiesById[id] = entity;
     // generate entity id
     this._entities.push(entity);
@@ -55,7 +73,18 @@ export abstract class World {
       listener.entityAdded(entity);
     });
 
+    // TODO add entity listener and prevent modification of id attribute
+    /*entity.addListener(<DataNodeListener> {
+      dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode) {
+        if (key === 'id') {
+          throw new Error('Do not modify id attribute of Entity after it has been added to a world!');
+        }
+      }
+    });*/
+
     this.entityAdded(entity);
+
+    return id;
   }
 
   update(delta: number) {
@@ -65,6 +94,18 @@ export abstract class World {
     this._controllers.forEach(controller => {
       controller.update(delta);
     });
+  }
+
+  /**
+   * Generates a new unique id for a Role that is added to the DataNode.
+   */
+  private generateNewEntityId(): string {
+    this.lastEntityId++;
+    if (this._entitiesById['' + this.lastEntityId] !== undefined) {
+      // node with id already existing -> generate new id
+      return this.generateNewEntityId();
+    }
+    return '' + this.lastEntityId;
   }
 
   abstract entityAdded(entity: DataNode): void;

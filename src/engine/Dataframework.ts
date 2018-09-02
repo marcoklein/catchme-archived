@@ -43,7 +43,7 @@ export class DataNode {
 
   private lastRoleId = 0;
 
-  constructor(data?: any) {
+  constructor(data?: {[key: string]: any} ) {
     this._data = data || {};
   }
 
@@ -52,12 +52,12 @@ export class DataNode {
   /**
    * Used to access data. data(key) will get data and data(key, value) sets data.
    */
-  data(key?: string, value?: Object): {[key: string]: Object} | any {
+  data<T>(key?: string, value?: Object): {[key: string]: Object} | any | T {
     if (key === undefined && value === undefined) {
       return this._data;
     } else if (value === undefined) {
       // get data with given key
-      return this._data[key];
+      return <T> this._data[key];
     }
     let oldValue = this._data[key];
     this._data[key] = value;
@@ -215,7 +215,7 @@ export class DataNode {
    */
   private generateNewRoleId(): string {
     this.lastRoleId++;
-    if (this.roles.lastId !== undefined) {
+    if (this.roles['' + this.lastRoleId] !== undefined) {
       // node with id already existing -> generate new id
       return this.generateNewRoleId();
     }
