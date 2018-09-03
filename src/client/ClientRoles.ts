@@ -116,7 +116,7 @@ export class SpriteRole extends PhaserRole {
   // for how many ms interpolation is already running
   private updateTime: number = 0;
   // number of ms the interpolation needs (set to server default)
-  private interpolationDelta: number = 100;
+  private interpolationDelta: number = 50;
   private destPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
   private srcPos: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
 

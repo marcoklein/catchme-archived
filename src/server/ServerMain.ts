@@ -52,7 +52,7 @@ export class ServerGame implements ServerGameInterface {
     // listen to update events and update
     let lastTimestamp = 0;
     let lastNetworkSync = 0;
-    let networkSyncInterval = 100;
+    let networkSyncInterval = 50;
     Matter.Events.on(this.engine, 'tick', event => {
       // update game
       let delta = event.timestamp - lastTimestamp;
