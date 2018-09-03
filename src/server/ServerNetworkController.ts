@@ -3,6 +3,7 @@ import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
+import { PlayerEntity } from './Entities';
 
 
 /**
@@ -81,7 +82,6 @@ export class ServerNetworkController extends NetworkController {
       this.handleNewConnection(socket);
     });
 
-    this.registerWorldMessages();
     this.initNodeDataChangeListener();
 
     //this.io.listen(port);
@@ -112,16 +112,15 @@ export class ServerNetworkController extends NetworkController {
       // tell client, that this is his entity so he can control it
       this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
 
+      this.game.mode.playerJoined(new PlayerEntity(this.game.world.getEntityById(entityId)));
+
     });
 
     socket.on('disconnect', () => {
       console.log('Client disconnected.');
       delete this.clientsById[socket.id];
+      // TODO delete player entity and tell game mode
     });
-  }
-
-
-  private registerWorldMessages() {
   }
 
 
