@@ -27,6 +27,10 @@ export abstract class Entity extends DataNode {
     return this.data('type');
   }
 
+  get id() {
+    return this.data('id');
+  }
+
 }
 
 export abstract class PhysicsEntity extends Entity {
@@ -59,7 +63,7 @@ export class PlayerEntity extends PhysicsEntity {
     this.name = this.name || '<unnamed>';
 
     this.addRole(new MatterCircleBody());
-    this.addRole(new ShakyRole());
+    //this.addRole(new ShakyRole());
   }
 
   set name(name) {

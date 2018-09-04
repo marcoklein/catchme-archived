@@ -1,13 +1,38 @@
 import * as SocketIO from 'socket.io';
+import * as Matter from 'matter-js'
 import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
+import { PhysicsRole } from './ServerRoles';
 
 
-export interface HostedConnection {
+export class HostedConnection {
+  private network: ServerNetworkController;
   name: string;
   id: string;
+  readonly socket: SocketIO.Socket;
+
+  private _entityId: string;
+
+  constructor(network: ServerNetworkController, socket: SocketIO.Socket, name: string) {
+    this.socket = socket;
+    this.network = network;
+    this.id = socket.id;
+    this.name = name;
+  }
+
+
+  set entityId(entityId) {
+    // notify client about change
+    this.socket.emit('player.entityId', entityId);
+    this._entityId = entityId;
+  }
+
+  get entityId(): string {
+    return this._entityId;
+  }
+
 }
 
 /**
@@ -67,7 +92,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
 export class ServerNetworkController extends NetworkController {
   io: SocketIO.Server;
 
-  private clientsById: any = {};
+  private clientsById: {[id: string]: HostedConnection} = {};
 
   private messageNum: number = 0;
 
@@ -102,8 +127,6 @@ export class ServerNetworkController extends NetworkController {
   }
 
   private handleNewConnection(socket: SocketIO.Socket) {
-    // store connection mapped by id
-    this.clientsById[socket.id] = socket;
 
     console.log('New connection with id %s.', socket.id);
 
@@ -112,8 +135,12 @@ export class ServerNetworkController extends NetworkController {
 
     socket.on('ready', (event: any) => {
 
+      // store connection mapped by id
+      let connection = new HostedConnection(this, socket, event.name || '<noname>');
+      this.clientsById[socket.id] = connection;
+
       socket.on('PlayerActions', (actions: UserActions) => {
-        this.handlePlayerActions(actions);
+        this.handlePlayerActions(socket, actions);
       });
 
       // send initial world data
@@ -122,7 +149,7 @@ export class ServerNetworkController extends NetworkController {
       });
 
       // notify game mode about joined client
-      this.game.mode.clientJoined({id: socket.id, name: '<noname>'});
+      this.game.mode.clientJoined(connection);
 
     });
 
@@ -133,8 +160,14 @@ export class ServerNetworkController extends NetworkController {
     });
   }
 
-  private handlePlayerActions(actions: UserActions) {
+  private handlePlayerActions(socket: SocketIO.Socket, actions: UserActions) {
     console.log('Player actions: ', actions);
+    if (actions.mX !== undefined && actions.mY !== undefined) {
+      Matter.Body.setVelocity(
+        (<PhysicsRole>this.game.world.getEntityById(this.clientsById[socket.id].entityId).getRoleByClass(PhysicsRole)).body,
+        Matter.Vector.create(actions.mX, actions.mY));
+    }
+
   }
 
 

@@ -23,11 +23,11 @@ export class SimpleCatchme implements GameMode {
   }
 
   clientJoined(client: HostedConnection): void {
-    console.log('client joined!');
+    console.log('client joined the dark side!');
 
     // send new player
     let player = new PlayerEntity();
-    player.name = 'test';
+    player.name = 'PussySlayer5XXX';
     player.x = Math.random() * 100;
     player.y = 300;
     player.radius = 30;
@@ -35,12 +35,14 @@ export class SimpleCatchme implements GameMode {
 
     this.game.world.addEntity(player);
 
+    client.entityId = player.id;
+
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)
   }
 
   clientLeft(client: HostedConnection): void {
-    console.log('player left!');
+    console.log('player rage quit!');
   }
 
 

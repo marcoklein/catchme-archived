@@ -127,7 +127,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
     if (message.type === 'Handshake') {
       console.log('Recieved Handshake message:' + message.data);
       this.clientId = message.data.clientId;
-      this.socket.emit('ready'); // tell server that we are ready
+      this.socket.emit('ready', { name: 'client name' }); // tell server that we are ready
     } else {
       console.error('Unhandled message with type %s', message.type);
     }
