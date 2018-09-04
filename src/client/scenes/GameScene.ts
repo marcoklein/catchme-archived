@@ -22,6 +22,7 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
   rightKey: Phaser.Input.Keyboard.Key;
 
   moveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+  lastMoveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0);
 
 
 
@@ -69,24 +70,22 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
 
   }
 
-  lastMoveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0);
 
   handleUserInput() {
 
-
-    let moveDirection = new Phaser.Math.Vector2(0, 0);
+    this.moveDirection.set(0, 0);
     // calculate move direction
     if (this.upKey.isDown) {
-      moveDirection.y -= 1;
+      this.moveDirection.y -= 1;
     }
     if (this.leftKey.isDown) {
-      moveDirection.x -= 1;
+      this.moveDirection.x -= 1;
     }
     if (this.downKey.isDown) {
-      moveDirection.y += 1;
+      this.moveDirection.y += 1;
     }
     if (this.rightKey.isDown) {
-      moveDirection.x += 1;
+      this.moveDirection.x += 1;
     }
 
     // only send update if move direction changed
@@ -94,12 +93,11 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
       this.lastMoveDirection.copy(this.moveDirection);
       // send user input to server
       this._network.sendUserActions({
-        mX: moveDirection.x,
-        mY: moveDirection.y
+        mX: this.moveDirection.x,
+        mY: this.moveDirection.y
       });
       console.log('sent update move direction');
     }
-    console.log('md: ', this.moveDirection);
 
 
   }
