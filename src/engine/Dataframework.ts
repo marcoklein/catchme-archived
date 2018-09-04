@@ -126,12 +126,17 @@ export class DataNode {
   }
 
   // TODO optimization for role by class: store clazz calls and results? -> remove cached when role is removed
-  getRoleByClass<T extends Role>(clazz: Function): T {
-    this.roleArray.forEach(role => {
-      if (role instanceof clazz) {
+  getRoleByClass<T extends Role>(Clazz: Function): T {
+    for (let role of this.roleArray) {
+      if (role instanceof Clazz) {
+        return <T>role;
+      }
+    }
+    /*this.roleArray.forEach(role => {
+      if (role instanceof Clazz) {
         return role;
       }
-    });
+    });*/
     return undefined;
   }
 
