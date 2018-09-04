@@ -1,5 +1,5 @@
 import * as SocketIOClient from 'socket.io-client';
-import { NetworkController, Message, WorldChanges } from '../engine/Network';
+import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { World, WorldController, WorldListener } from '../engine/World';
 import { ClientGameInterface } from './ClientMain';
 import { PlayerControl } from './ClientRoles';
@@ -87,6 +87,10 @@ export class ClientNetworkController extends NetworkController implements WorldC
   }
 
   cleanup(world: World) {
+  }
+
+  sendUserActions(actions: UserActions) {
+    this.socket.emit('PlayerActions', actions);
   }
 
   /**

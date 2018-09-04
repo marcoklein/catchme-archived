@@ -1,5 +1,5 @@
 import * as SocketIO from 'socket.io';
-import { NetworkController, Message, WorldChanges } from '../engine/Network';
+import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
@@ -112,18 +112,16 @@ export class ServerNetworkController extends NetworkController {
 
     socket.on('ready', (event: any) => {
 
+      socket.on('PlayerActions', (actions: UserActions) => {
+        this.handlePlayerActions(actions);
+      });
+
       // send initial world data
       socket.emit('WorldUpdate', {
         addedEntities: this.game.world.getEntitiesData()
       });
 
-
-      // create player for client
-      //let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
-
-      // tell client, that this is his entity so he can control it
-      //this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
-
+      // notify game mode about joined client
       this.game.mode.clientJoined({id: socket.id, name: '<noname>'});
 
     });
@@ -133,6 +131,10 @@ export class ServerNetworkController extends NetworkController {
       delete this.clientsById[socket.id];
       // TODO delete player entity and tell game mode
     });
+  }
+
+  private handlePlayerActions(actions: UserActions) {
+    console.log('Player actions: ', actions);
   }
 
 

@@ -209,14 +209,14 @@ export class PlayerControl extends PhaserRole {
   moveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene) {
-    this.upKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    /*this.upKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
     this.leftKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
     this.downKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-    this.rightKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+    this.rightKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);*/
   }
 
   updateRole(delta: number, node: DataNode): void {
-    let moveDirection = new Phaser.Math.Vector2(0, 0);
+    /*let moveDirection = new Phaser.Math.Vector2(0, 0);
     // calculate move direction
     if (this.upKey.isDown) {
       moveDirection.y -= 1;
@@ -229,7 +229,7 @@ export class PlayerControl extends PhaserRole {
     }
     if (this.rightKey.isDown) {
       moveDirection.x += 1;
-    }
+    }*/
 
   }
 

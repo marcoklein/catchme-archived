@@ -15,6 +15,17 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
   private _world: ClientWorld;
   private _entityFactory: ClientEntityFactory;
 
+  // for user input
+  upKey: Phaser.Input.Keyboard.Key;
+  leftKey: Phaser.Input.Keyboard.Key;
+  downKey: Phaser.Input.Keyboard.Key;
+  rightKey: Phaser.Input.Keyboard.Key;
+
+  moveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
+
+
+
+
   get entityFactory() {
     return this._entityFactory;
   }
@@ -29,6 +40,8 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
   update(time: number, delta: number): void {
     // update world
     this._world.update(delta);
+
+    this.handleUserInput();
   }
 
   preload(): void {
@@ -47,6 +60,47 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
     CLIENT_ENTITY_PRODUCERS.forEach((producer: ClientEntityProducer) => {
       this._entityFactory.registerProducer(producer.type, producer);
     });
+
+    // init user input
+    this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+    this.leftKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
+    this.downKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
+    this.rightKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
+
+  }
+
+  lastMoveDirection: Phaser.Math.Vector2 = new Phaser.Math.Vector2(0, 0);
+
+  handleUserInput() {
+
+
+    let moveDirection = new Phaser.Math.Vector2(0, 0);
+    // calculate move direction
+    if (this.upKey.isDown) {
+      moveDirection.y -= 1;
+    }
+    if (this.leftKey.isDown) {
+      moveDirection.x -= 1;
+    }
+    if (this.downKey.isDown) {
+      moveDirection.y += 1;
+    }
+    if (this.rightKey.isDown) {
+      moveDirection.x += 1;
+    }
+
+    // only send update if move direction changed
+    if (!this.moveDirection.equals(this.lastMoveDirection)) {
+      this.lastMoveDirection.copy(this.moveDirection);
+      // send user input to server
+      this._network.sendUserActions({
+        mX: moveDirection.x,
+        mY: moveDirection.y
+      });
+      console.log('sent update move direction');
+    }
+    console.log('md: ', this.moveDirection);
+
 
   }
 

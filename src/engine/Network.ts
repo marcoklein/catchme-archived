@@ -1,5 +1,11 @@
 import { DataNode } from './Dataframework';
 
+export interface UserActions {
+  /** Move direction x */
+  mX: number,
+  /** Move direction y */
+  mY: number
+}
 
 export interface WorldChanges {
   /**
