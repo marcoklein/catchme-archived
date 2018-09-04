@@ -6,6 +6,7 @@ import * as Express from 'express';
 import * as Path from 'path';
 
 import { ServerGame } from './ServerMain';
+import { SimpleCatchme } from '../game/SimpleCatchme';
 
 
 let game = new ServerGame();
@@ -26,5 +27,5 @@ app.use(function(req: any, res: any, next: any) {
 // start express on different port then socket.io
 app.listen(4680, function() {
   console.log('Listening on port 4680!');
-  game.start();
+  game.start(new SimpleCatchme());
 });

@@ -31,15 +31,11 @@ export abstract class MatterRole implements Role {
 }
 
 export abstract class PhysicsRole extends MatterRole {
-  initX: number;
-  initY: number;
 
   body: Matter.Body;
 
-  constructor(x: number, y: number) {
+  constructor() {
     super();
-    this.initX = x;
-    this.initY = y;
   }
 
   get x() {
@@ -52,11 +48,13 @@ export abstract class PhysicsRole extends MatterRole {
 
 
   engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
-    this.body = this.createBody(this.initX, this.initY, engine);
+    console.log('updating engine');
+    this.body = this.createBody(this.x, this.y, engine);
     Matter.World.add(engine.world, this.body);
     // set initial position
-    this.node.data('x', this.initX);
-    this.node.data('y', this.initY);
+    this.node.data('x', this.x);
+    this.node.data('y', this.y);
+    console.log('physics body created');
   }
 
   abstract createBody(x: number, y: number, engine: Matter.Engine): Matter.Body
@@ -71,10 +69,9 @@ export abstract class PhysicsRole extends MatterRole {
 
 export class MatterCircleBody extends PhysicsRole {
 
-  private _radius: number;
 
   get radius() {
-    return this._radius;
+    return this.node.data('radius');
   }
 
   get name() {
@@ -83,15 +80,14 @@ export class MatterCircleBody extends PhysicsRole {
 
   // TODO if radius set -> update matter circle object
 
-  constructor(x: number, y: number, radius: number) {
-    super(x, y);
-    this._radius = radius;
+  constructor() {
+    super();
   }
 
   createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
-    this.node.data('radius', this.radius);
-    return Matter.Bodies.circle(this.initX, this.initY, this.radius, { restitution: 1, friction: 1});
+    return Matter.Bodies.circle(x, y, this.radius, { restitution: 1, friction: 1});
   }
+
 }
 
 /**
@@ -122,9 +118,10 @@ export class ShakyRole implements Role {
     }
   }
 
-  removedFromNode(node: DataNode): void {
-  }
   addedToNode(node: DataNode): void {
+  }
+
+  removedFromNode(node: DataNode): void {
   }
 
 

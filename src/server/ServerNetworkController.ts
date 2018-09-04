@@ -3,8 +3,12 @@ import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
-import { PlayerEntity } from './Entities';
 
+
+export interface HostedConnection {
+  name: string;
+  id: string;
+}
 
 /**
  * Part of the ServerNetworkController.
@@ -106,13 +110,12 @@ export class ServerNetworkController extends NetworkController {
 
 
       // create player for client
-      let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
-
+      //let entityId = this.game.world.addEntity(this.game.world.entityFactory.produceFromType('player'));
 
       // tell client, that this is his entity so he can control it
-      this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
+      //this.io.emit('player.entityId', { clientId: socket.id, entityId: entityId });
 
-      this.game.mode.playerJoined(new PlayerEntity(this.game.world.getEntityById(entityId)));
+      this.game.mode.clientJoined({id: socket.id, name: '<noname>'});
 
     });
 

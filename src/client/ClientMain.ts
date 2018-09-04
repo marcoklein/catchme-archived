@@ -5,6 +5,7 @@ import { GameScene } from './scenes/GameScene';
 
 import { ClientWorld } from './ClientWorld';
 import { ClientNetworkController } from './ClientNetworkController';
+import { ClientEntityFactory } from './ClientEntityFactory';
 
 // main game configuration
 const config: GameConfig = {
@@ -23,7 +24,8 @@ const config: GameConfig = {
 
 export interface ClientGameInterface {
   network: ClientNetworkController,
-  world: ClientWorld
+  world: ClientWorld,
+  entityFactory: ClientEntityFactory
 }
 
 // game class

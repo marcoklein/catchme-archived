@@ -73,7 +73,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
     // apply added entities
     if (changes.addedEntities) {
       changes.addedEntities.forEach(data => {
-        world.addEntity(world.entityFactory.produceFromType(data.type, data));
+        world.addEntity(this.game.entityFactory.produceFromType(data.type, data));
       });
     }
     // update

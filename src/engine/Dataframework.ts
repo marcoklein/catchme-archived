@@ -135,11 +135,11 @@ export class DataNode {
     return undefined;
   }
 
-  getRolesByClass(clazz: Function): Array<Role> {
+  getRolesByClass(Clazz: Function): Array<Role> {
     // TODO check if clazz is a function and instanceof Role
     let result: Array<Role> = [];
     this.roleArray.forEach(role => {
-      if (role instanceof clazz) {
+      if (role instanceof Clazz) {
         result.push(role);
       }
     });

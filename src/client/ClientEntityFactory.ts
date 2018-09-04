@@ -1,8 +1,9 @@
-import { DataNode } from "./Dataframework";
+import { DataNode } from "../engine/Dataframework";
 
 
-export interface EntityProducer {
-  produceEntity(type: string, data: Object): DataNode;
+export interface ClientEntityProducer {
+  type: string;
+  produceClientEntity(node: DataNode): DataNode;
 }
 
 /**
@@ -12,7 +13,7 @@ export interface EntityProducer {
  * Entity types can be registered through registerEntity(type, producer)
  * The produceFunction must return an Entity.
  */
-export class EntityFactory {
+export class ClientEntityFactory {
 
   // map of registereded entities associated to their type key
   private registeredProducers: any = {};
@@ -27,7 +28,9 @@ export class EntityFactory {
   produceFromType(type: string, data?: Object): DataNode {
     let producer = this.registeredProducers[type];
     if (producer) {
-      return producer.produceEntity(type, data);
+      // create node, the producer can edit
+      let node = new DataNode(data);
+      return producer.produceClientEntity(node);
     }
     throw new Error('Unsupported Entity type of EntityFactory: ' + type);
   }
@@ -38,7 +41,7 @@ export class EntityFactory {
    * @param type Type of producer.
    * @param producer Producer used to create Entity.
    */
-  registerProducer(type: string, producer: EntityProducer) {
+  registerProducer(type: string, producer: ClientEntityProducer) {
     this.registeredProducers[type] = producer;
   }
 

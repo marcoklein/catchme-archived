@@ -4,6 +4,8 @@ import * as Phaser from 'phaser';
 import { ClientGameInterface } from '../ClientMain';
 import { ClientWorld } from '../ClientWorld';
 import { ClientNetworkController } from '../ClientNetworkController';
+import { ClientEntityFactory, ClientEntityProducer } from '../ClientEntityFactory';
+import { CLIENT_ENTITY_PRODUCERS } from '../../game/ClientEntities';
 
 /** Test Scene */
 export class GameScene extends Phaser.Scene implements ClientGameInterface {
@@ -11,6 +13,11 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
 
   private _network: ClientNetworkController;
   private _world: ClientWorld;
+  private _entityFactory: ClientEntityFactory;
+
+  get entityFactory() {
+    return this._entityFactory;
+  }
 
   constructor() {
     super({
@@ -34,6 +41,12 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
 
     this._world = new ClientWorld(this);
     this._network = new ClientNetworkController('http://localhost:4681', this);
+    this._entityFactory = new ClientEntityFactory();
+
+    // load entities
+    CLIENT_ENTITY_PRODUCERS.forEach((producer: ClientEntityProducer) => {
+      this._entityFactory.registerProducer(producer.type, producer);
+    });
 
   }
 

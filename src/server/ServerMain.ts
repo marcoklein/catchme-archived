@@ -4,11 +4,10 @@
 import * as Matter from 'matter-js'
 
 import { ServerWorld } from './ServerWorld';
-import { ServerNetworkController } from './ServerNetworkController';
+import { ServerNetworkController, HostedConnection } from './ServerNetworkController';
 import { WorldListener } from '../engine/World';
 import { DataNode } from '../engine/Dataframework';
 import { MatterRole } from './ServerRoles';
-import { PlayerEntity } from './Entities';
 
 export interface GameMode {
 
@@ -17,8 +16,10 @@ export interface GameMode {
   update(delta: number): void;
   finishGame(): void;
 
-  playerJoined(player: PlayerEntity): void;
-  playerLeft(player: PlayerEntity): void;
+  clientJoined(client: HostedConnection): void;
+  clientLeft(client: HostedConnection): void;
+
+  // TODO add collision detection from https://github.com/dxu/matter-collision-events
 
 }
 
@@ -120,7 +121,6 @@ export class ServerGame implements ServerGameInterface {
     // sync with engine
     this.world.addListener(<WorldListener> {
       entityAdded(entity: DataNode) {
-        console.log('entity added');
         entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
           role.engine = self.engine;
         });

@@ -1,13 +1,12 @@
 import { World } from '../engine/World'
 import { DataNode } from '../engine/Dataframework'
-import { EntityFactory } from '../engine/EntityFactory'
-import { PlayerProducer, SimpleSpriteProducer } from './ClientEntityProducers'
 import { PhaserRole } from './ClientRoles';
 
 /**
  * Extends basic World with client specific behaviors and properties.
  */
 export class ClientWorld extends World {
+
   private _gameScene: Phaser.Scene;
   clientEntity: DataNode;
 
@@ -16,20 +15,20 @@ export class ClientWorld extends World {
   }
 
   constructor(gameScene: Phaser.Scene) {
-    super(new EntityFactory());
+    super();
     this._gameScene = gameScene;
 
-    this.registerEntityProducers();
+    //this.registerEntityProducers();
   }
 
-  private registerEntityProducers() {
+  /*private registerEntityProducers() {
     this.entityFactory.registerProducer(
       'sprite', new SimpleSpriteProducer()
     );
     this.entityFactory.registerProducer(
       'player', new PlayerProducer()
     );
-  }
+  }*/
 
   entityAdded(entity: DataNode): void {
     // phaser entity?
@@ -41,5 +40,8 @@ export class ClientWorld extends World {
       });
     }
     // TODO add listener to entity to call phaser if new entity was added before
+  }
+
+  entityRemoved(entity: DataNode): void {
   }
 }

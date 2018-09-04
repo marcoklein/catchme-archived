@@ -1,4 +1,3 @@
-import { EntityFactory } from './EntityFactory'
 import { DataNode, DataNodeListener } from './Dataframework'
 import * as _ from 'underscore'
 
@@ -14,11 +13,16 @@ export interface WorldListener {
 }
 
 /**
- * Holds all information about ongoing game.
- * Has to be extended to realize either a server, client or local implementation.
+ * Base class for ServerWorld and ClientWorld.
+ * Implements basic functionalities to manage entities (add and remove).
+ * Listeners can be added through addListener(listener) to get notified about
+ * added or removed entities.
+ *
+ * Added entities recieve a unique id if they have none.
+ *
+ * Calling update() will update all entities.
  */
 export abstract class World {
-  private _entityFactory: EntityFactory;
   private _entities: Array<DataNode> = [];
   private _entitiesById: any = {};
   private _controllers: Array<WorldController> = [];
@@ -26,12 +30,7 @@ export abstract class World {
 
   private lastEntityId: number = 0;
 
-  get entityFactory() {
-    return this._entityFactory;
-  }
-
-  constructor(entityFactory: EntityFactory) {
-    this._entityFactory = entityFactory;
+  constructor() {
   }
 
   addListener(listener: WorldListener) {
@@ -124,5 +123,6 @@ export abstract class World {
   }
 
   abstract entityAdded(entity: DataNode): void;
+  abstract entityRemoved(entity: DataNode): void;
 
 }
