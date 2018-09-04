@@ -11,7 +11,6 @@ import { MatterRole } from './ServerRoles';
 
 export interface GameMode {
 
-  initGame(game: ServerGameInterface): void;
   startGame(game: ServerGameInterface): void;
   update(delta: number): void;
   finishGame(): void;
@@ -34,7 +33,7 @@ export class GameHelper {
    * Creates world boundaries by adding one box on each side.
    */
   createWorldBoundaries(minX: number, minY: number, maxX: number, maxY: number) {
-    console.warn('createWorldBoundaries is not implemented yet.');
+    console.warn('createWorldBoundaries uses default values.');
     Matter.World.add(this.game.engine.world, [
       Matter.Bodies.rectangle(400, 600, 1200, 50.5, { isStatic: true })
     ]);
@@ -71,7 +70,6 @@ export class ServerGame implements ServerGameInterface {
     this.init();
 
     // start game mode
-    this.mode.initGame(this);
     this.mode.startGame(this);
 
 
@@ -82,8 +80,8 @@ export class ServerGame implements ServerGameInterface {
   private init() {
     // init matter
     this.engine = Matter.Engine.create();
-    //this.engine.world.gravity.x = 0.01;
-    //this.engine.world.gravity.y = 0.00;
+    this.engine.world.gravity.x = 0.00;
+    this.engine.world.gravity.y = 0.00;
 
 
     // init world and network

@@ -85,7 +85,7 @@ export class MatterCircleBody extends PhysicsRole {
   }
 
   createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
-    return Matter.Bodies.circle(x, y, this.radius, { restitution: 1, friction: 1});
+    return Matter.Bodies.circle(x, y, this.radius, { restitution: 0.2, friction: 0.2});
   }
 
 }
@@ -98,7 +98,9 @@ export class ShakyRole implements Role {
   node: DataNode;
   id: string;
 
-  leftRight: boolean = false;
+  leftRight: boolean = true;
+  moveTime: number = 0;
+  maxMoveTime: number = 2000;
 
   get name() {
     return 'ShakyRole';
@@ -109,13 +111,20 @@ export class ShakyRole implements Role {
     if (physicsRole === undefined) {
       return;
     }
+    this.moveTime -= delta;
+    if (this.moveTime <= 0) {
+      this.moveTime = this.maxMoveTime;
+      this.leftRight = !this.leftRight;
 
-    if (this.leftRight) {
-      Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(-1, 0));
-    } else {
-      Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(1, 0));
-      //node.data('x', node.data('x') + 0.1 * delta);
+      // only set velocity once for a change
+      if (this.leftRight) {
+        Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(-1, 0));
+      } else {
+        Matter.Body.setVelocity(physicsRole.body, Matter.Vector.create(1, 0));
+      }
     }
+
+
   }
 
   addedToNode(node: DataNode): void {

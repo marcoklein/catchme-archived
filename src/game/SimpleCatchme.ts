@@ -1,18 +1,19 @@
-import { GameMode, ServerGameInterface } from "../server/ServerMain";
+import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain";
 import { PlayerEntity, Entity } from "./Entities";
 import { HostedConnection } from "../server/ServerNetworkController";
-import { MatterRole } from "../server/ServerRoles";
 
 
 export class SimpleCatchme implements GameMode {
 
   protected game: ServerGameInterface;
+  protected helper: GameHelper;
 
-  initGame(game: ServerGameInterface): void {
-    this.game = game;
-  }
 
   startGame(game: ServerGameInterface): void {
+    this.game = game;
+    this.helper = new GameHelper(game);
+
+    this.helper.createWorldBoundaries(0, 0, 800, 600);
   }
 
   update(delta: number): void {
