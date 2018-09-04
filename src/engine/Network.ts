@@ -1,7 +1,13 @@
 import { DataNode } from './Dataframework';
 
 
-export interface WorldUpdateData {
+export interface WorldChanges {
+  /**
+   * With every world change the number increases.
+   * When the client connects for the first time, the server sends the initial
+   * world status. Then this value will be undefined.
+   */
+  num?: number;
   /**
    * Array of data of added entities.
    */

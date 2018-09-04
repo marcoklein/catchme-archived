@@ -1,5 +1,5 @@
 import * as SocketIO from 'socket.io';
-import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
+import { NetworkController, Message, WorldChanges } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
@@ -19,7 +19,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
   private network: ServerNetworkController;
 
   // only the latest world state is distrbuted to clients
-  private changes: WorldUpdateData;
+  private changes: WorldChanges;
 
   constructor(network: ServerNetworkController) {
     this.network = network;
@@ -37,7 +37,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
   sendChanges() {
     // TODO send bulk message (message containing array)
     // inform clients about added entities
-    this.network.io.emit('WorldUpdate', this.changes);
+    this.network.sendWorldUpdate(this.changes);
 
     this.resetChanges();
   }
@@ -69,6 +69,8 @@ export class ServerNetworkController extends NetworkController {
 
   private clientsById: any = {};
 
+  private messageNum: number = 0;
+
   worldSynchronizer: WorldSynchronizer = new WorldSynchronizer(this);
   game: ServerGameInterface;
 
@@ -90,6 +92,13 @@ export class ServerNetworkController extends NetworkController {
 
     //this.io.listen(port);
     console.log('SocketIO listening on port %i', port);
+  }
+
+  sendWorldUpdate(changes: WorldChanges) {
+    // send message number with message
+    changes.num = this.messageNum;
+    this.messageNum++;
+    this.io.emit('WorldUpdate', changes);
   }
 
   private handleNewConnection(socket: SocketIO.Socket) {

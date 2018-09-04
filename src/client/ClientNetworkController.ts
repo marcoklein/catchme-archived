@@ -1,5 +1,5 @@
 import * as SocketIOClient from 'socket.io-client';
-import { NetworkController, Message, WorldUpdateData } from '../engine/Network';
+import { NetworkController, Message, WorldChanges } from '../engine/Network';
 import { World, WorldController, WorldListener } from '../engine/World';
 import { ClientGameInterface } from './ClientMain';
 import { PlayerControl } from './ClientRoles';
@@ -9,6 +9,16 @@ export class ClientNetworkController extends NetworkController implements WorldC
   private socket: SocketIOClient.Socket;
   private clientId: string;
   private entityId: string;
+
+  /**
+   * True if client has recieved all initial world changes.
+   */
+  private worldInitialized: boolean = false;
+  /**
+   * Arriving world changes are cached, until the initialization message is recieved.
+   */
+  private cachedChanges: WorldChanges[] = [];
+
   // to sync player movement
   private playerControl: PlayerControl;
   private lastMoveDir: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
@@ -31,8 +41,22 @@ export class ClientNetworkController extends NetworkController implements WorldC
     this.socket.on('player.entityId', (entityId: string) => {
       this.setEntityId(entityId);
     });
-    this.socket.on('WorldUpdate', (changes: any) => {
-      this.applyWorldChanges(changes);
+    this.socket.on('WorldUpdate', (changes: WorldChanges) => {
+      if (this.worldInitialized === false) {
+        if (changes.num !== undefined) {
+          // wait for initialization message
+          this.cachedChanges.push(changes);
+        } else {
+          this.worldInitialized = true;
+          this.applyWorldChanges(changes);
+          // apply cached changes
+          this.cachedChanges.forEach(changes => {
+            this.applyWorldChanges(changes);
+          });
+        }
+      } else {
+        this.applyWorldChanges(changes);
+      }
     });
 
   }
@@ -68,7 +92,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
   /**
    * Called as an update world message is recieved through socket io.
    */
-  private applyWorldChanges(changes: WorldUpdateData) {
+  private applyWorldChanges(changes: WorldChanges) {
     let world = this.game.world;
     // apply added entities
     if (changes.addedEntities) {
