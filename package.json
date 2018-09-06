@@ -4,6 +4,7 @@
   "description": "Tagging game based on Phaser.",
   "main": "index.js",
   "scripts": {
+		"postinstall": "cd public & npm i --production",
     "test-watch": "mocha --watch",
     "build-server": "tsc --build tsconfig.json",
     "build-client-ts": "tsc --build tsconfig-client.json",
