@@ -34,11 +34,28 @@ export class GameHelper {
 
   /**
    * Creates world boundaries by adding one box on each side.
+   * Generated boundaries look like this:
+   * ------up--------
+   * |              |
+   *left          right
+   * |              |
+   * ----bottom------
    */
   createWorldBoundaries(minX: number, minY: number, maxX: number, maxY: number) {
-    console.warn('createWorldBoundaries uses default values.');
+    let thickness = 50; // how wide walls are
+    let width = maxX - minX + 2 * thickness;
+    let height = maxY - minY;
+    // create one huge box on every side
+    // the origin of a box is in it's center, so it has to be moved to fit
     Matter.World.add(this.game.engine.world, [
-      Matter.Bodies.rectangle(400, 600, 1200, 50.5, { isStatic: true })
+      // up
+      Matter.Bodies.rectangle(minX - thickness + width / 2, minY - thickness / 2, width, thickness, { isStatic: true }),
+      // left
+      Matter.Bodies.rectangle(minX - thickness / 2, minY + height / 2, thickness, height, { isStatic: true }),
+      // bottom
+      Matter.Bodies.rectangle(minX - thickness + width / 2, maxY + thickness / 2, width, thickness, { isStatic: true }),
+      // right
+      Matter.Bodies.rectangle(maxX + thickness / 2, minY + height / 2, thickness, height, { isStatic: true })
     ]);
   }
 
