@@ -9,14 +9,10 @@ import { PhysicsRole, MatterCircleBody, ShakyRole } from "../server/ServerRoles"
  * If a new Entity is added on the server an according ClientEntityProducer has to be added to the client!
  */
 export abstract class Entity extends DataNode {
-  protected readonly rolesToAdd: Role[] = [];
 
   constructor(type: string) {
     super();
     this.type = type;
-    this.rolesToAdd.forEach(role => {
-      this.addRole(role);
-    });
   }
 
   set type(type) {

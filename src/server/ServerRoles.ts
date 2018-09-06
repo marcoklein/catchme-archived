@@ -34,6 +34,8 @@ export abstract class PhysicsRole extends MatterRole {
 
   body: Matter.Body;
 
+  moveDirection: Matter.Vector = Matter.Vector.create(0, 0);
+
   constructor() {
     super();
   }
@@ -46,6 +48,14 @@ export abstract class PhysicsRole extends MatterRole {
     return this.node.data('y');
   }
 
+  get speed() {
+    return this.node.data('speed');
+  }
+
+  set speed(speed) {
+    this.node.data('speed', speed);
+  }
+
 
   engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
     console.log('updating engine');
@@ -54,6 +64,8 @@ export abstract class PhysicsRole extends MatterRole {
     // set initial position
     this.node.data('x', this.x);
     this.node.data('y', this.y);
+    // set default val
+    this.speed = this.speed || 1;
     console.log('physics body created');
   }
 
@@ -64,6 +76,21 @@ export abstract class PhysicsRole extends MatterRole {
     this.node.data('x', this.body.position.x);
     this.node.data('y', this.body.position.y);
     this.node.data('interpolate', true);
+
+    // velocity has to be applied every round to keep entity moving
+    Matter.Body.setVelocity(
+      this.body,
+      this.moveDirection);
+  }
+
+  setMoveDirection(x: number, y: number) {
+    this.moveDirection.x = x;
+    this.moveDirection.y = y;
+    // init vector
+    this.moveDirection = Matter.Vector.normalise(this.moveDirection);
+    // scale with speed
+    this.moveDirection.x *= this.speed;
+    this.moveDirection.y *= this.speed;
   }
 }
 
@@ -85,7 +112,7 @@ export class MatterCircleBody extends PhysicsRole {
   }
 
   createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
-    return Matter.Bodies.circle(x, y, this.radius, { restitution: 0.2, friction: 0.2});
+    return Matter.Bodies.circle(x, y, this.radius, { restitution: 1, friction: 1});
   }
 
 }

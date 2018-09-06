@@ -92,7 +92,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
 export class ServerNetworkController extends NetworkController {
   io: SocketIO.Server;
 
-  private clientsById: {[id: string]: HostedConnection} = {};
+  clientsById: {[id: string]: HostedConnection} = {};
 
   private messageNum: number = 0;
 
@@ -162,11 +162,9 @@ export class ServerNetworkController extends NetworkController {
 
   private handlePlayerActions(socket: SocketIO.Socket, actions: UserActions) {
     console.log('Player actions: ', actions);
-    if (actions.mX !== undefined && actions.mY !== undefined) {
-      Matter.Body.setVelocity(
-        (<PhysicsRole>this.game.world.getEntityById(this.clientsById[socket.id].entityId).getRoleByClass(PhysicsRole)).body,
-        Matter.Vector.create(actions.mX, actions.mY));
-    }
+
+    // notify game mode
+    this.game.mode.userActions(this.clientsById[socket.id], actions);
 
   }
 

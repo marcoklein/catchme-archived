@@ -8,12 +8,15 @@ import { ServerNetworkController, HostedConnection } from './ServerNetworkContro
 import { WorldListener } from '../engine/World';
 import { DataNode } from '../engine/Dataframework';
 import { MatterRole } from './ServerRoles';
+import { UserActions } from '../engine/Network';
 
 export interface GameMode {
 
   startGame(game: ServerGameInterface): void;
   update(delta: number): void;
   finishGame(): void;
+
+  userActions(client: HostedConnection, userActions: UserActions): void;
 
   clientJoined(client: HostedConnection): void;
   clientLeft(client: HostedConnection): void;
