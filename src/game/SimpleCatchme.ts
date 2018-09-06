@@ -3,6 +3,7 @@ import { PlayerEntity, Entity } from "./Entities";
 import { HostedConnection } from "../server/ServerNetworkController";
 import { UserActions } from "../engine/Network";
 import { PhysicsRole } from "../server/ServerRoles";
+import Matter = require("matter-js");
 
 
 export class SimpleCatchme implements GameMode {
@@ -10,7 +11,7 @@ export class SimpleCatchme implements GameMode {
   protected game: ServerGameInterface;
   protected helper: GameHelper;
 
-  protected players: {[id: string]: PlayerEntity};
+  protected players: {[clientId: string]: PlayerEntity} = {};
 
   startGame(game: ServerGameInterface): void {
     this.game = game;
@@ -19,7 +20,20 @@ export class SimpleCatchme implements GameMode {
     this.helper.createWorldBoundaries(0, 0, 800, 600);
   }
 
+  forceTimer: number = 0;
+  forceInterval: number = 10000;
   update(delta: number): void {
+    this.forceTimer -= delta;
+    if (this.forceTimer < 0) {
+      this.forceTimer = this.forceInterval;
+      console.log('applying force');
+      for (let key in this.players) {
+        let player: PlayerEntity = this.players[key];
+        // apply force to players every 2 seconds
+        let body = (<PhysicsRole>player.getRoleByClass(PhysicsRole)).body;
+        Matter.Body.applyForce(body, Matter.Vector.create(body.position.x, body.position.y), Matter.Vector.create(Math.random() * 0.1, Math.random() * 0.1));
+      }
+    }
   }
 
   finishGame(): void {
@@ -48,6 +62,8 @@ export class SimpleCatchme implements GameMode {
     this.game.world.addEntity(player);
 
     client.entityId = player.id;
+
+    this.players[client.id] = player;
 
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)

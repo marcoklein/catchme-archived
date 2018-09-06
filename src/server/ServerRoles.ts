@@ -34,6 +34,7 @@ export abstract class PhysicsRole extends MatterRole {
 
   body: Matter.Body;
 
+  private oldMoveDirection = Matter.Vector.create(0, 0);
   moveDirection: Matter.Vector = Matter.Vector.create(0, 0);
 
   constructor() {
@@ -77,10 +78,8 @@ export abstract class PhysicsRole extends MatterRole {
     this.node.data('y', this.body.position.y);
     this.node.data('interpolate', true);
 
-    // velocity has to be applied every round to keep entity moving
-    Matter.Body.setVelocity(
-      this.body,
-      this.moveDirection);
+    // move entity body (do not modify velocity)
+    Matter.Body.translate(this.body, this.moveDirection);
   }
 
   setMoveDirection(x: number, y: number) {
@@ -112,7 +111,7 @@ export class MatterCircleBody extends PhysicsRole {
   }
 
   createBody(x: number, y: number, engine: Matter.Engine): Matter.Body {
-    return Matter.Bodies.circle(x, y, this.radius, { restitution: 0.2, friction: 0.2});
+    return Matter.Bodies.circle(x, y, this.radius, { restitution: 0.1, friction: 0.05});
   }
 
 }

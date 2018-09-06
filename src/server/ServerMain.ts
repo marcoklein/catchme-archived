@@ -42,7 +42,7 @@ export class GameHelper {
    * ----bottom------
    */
   createWorldBoundaries(minX: number, minY: number, maxX: number, maxY: number) {
-    let thickness = 50; // how wide walls are
+    let thickness = 1000; // how wide walls are
     let width = maxX - minX + 2 * thickness;
     let height = maxY - minY;
     // create one huge box on every side
