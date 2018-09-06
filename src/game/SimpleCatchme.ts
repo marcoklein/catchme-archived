@@ -28,8 +28,8 @@ export class SimpleCatchme implements GameMode {
   userActions(client: HostedConnection, actions: UserActions) {
     // apply move direction
     if (actions.mX !== undefined && actions.mY !== undefined) {
-      let physics = (<PhysicsRole>this.game.world.getEntityById(client.entityId).getRoleByClass(PhysicsRole));
-      physics.setMoveDirection(actions.mX, actions.mY);
+      let player = (<PlayerEntity>this.game.world.getEntityById(client.entityId));
+      player.setMoveDirection(actions.mX, actions.mY);
     }
   }
 
@@ -42,6 +42,7 @@ export class SimpleCatchme implements GameMode {
     player.x = Math.random() * 100;
     player.y = 300;
     player.radius = 30;
+    player.speed = 5;
     player.image = 'characterBlue';
 
     this.game.world.addEntity(player);

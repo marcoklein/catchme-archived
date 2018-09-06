@@ -30,7 +30,6 @@ export abstract class Entity extends DataNode {
 }
 
 export abstract class PhysicsEntity extends Entity {
-  private _physicsRole: PhysicsRole;
 
 
   set x(x) {
@@ -52,13 +51,15 @@ export abstract class PhysicsEntity extends Entity {
 
 export class PlayerEntity extends PhysicsEntity {
   static TYPE: string = 'player';
+  private _physicsRole: PhysicsRole;
 
   constructor() {
     super('player');
 
     this.name = this.name || '<unnamed>';
 
-    this.addRole(new MatterCircleBody());
+    this._physicsRole = new MatterCircleBody();
+    this.addRole(this._physicsRole);
     //this.addRole(new ShakyRole());
   }
 
@@ -84,6 +85,18 @@ export class PlayerEntity extends PhysicsEntity {
 
   get radius() {
     return this.data('radius');
+  }
+
+  get speed() {
+    return this.data('speed');
+  }
+
+  set speed(speed) {
+    this.data('speed', speed);
+  }
+
+  setMoveDirection(x: number, y: number) {
+    this._physicsRole.setMoveDirection(x, y);
   }
 
   /*
