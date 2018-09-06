@@ -121,15 +121,25 @@ export class ServerGame implements ServerGameInterface {
       this.mode.update(delta);
 
       // do network sync every network sync interval
-      lastNetworkSync -= delta;
-      if (lastNetworkSync <= 0) {
-        lastNetworkSync = networkSyncInterval;
-        this.network.worldSynchronizer.sendChanges();
-      }
+      //lastNetworkSync -= delta;
+      //if (lastNetworkSync <= 0) {
+        //lastNetworkSync = networkSyncInterval;
+        //this.network.worldSynchronizer.sendChanges();
+      //}
 
       lastTimestamp = event.timestamp;
 
     });
+
+    // send network changes exactly every 50ms
+    let sendNetworkChanges = () => {
+      setTimeout(() => {
+      this.network.worldSynchronizer.sendChanges();
+        sendNetworkChanges();
+      }, 50)
+    };
+    sendNetworkChanges();
+
 
     this.initWorldListener();
   }
