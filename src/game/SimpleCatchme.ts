@@ -65,6 +65,9 @@ export class SimpleCatchme implements GameMode {
 
     this.players[client.id] = player;
 
+
+		player.image = 'test-sprite';
+
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)
   }

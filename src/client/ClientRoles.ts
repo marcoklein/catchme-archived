@@ -89,8 +89,18 @@ export class SpriteRole extends PhaserRole {
     this.destY = this.sprite.y;
   }
 
-  changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
-    console.log('Changed phaser scene: adding');
+	nodeDataUpdated(key: string, value: any, oldValue: any, node: DataNode) {
+		// update sprite texture if image changed
+		if (key === 'image') {
+			this.changeSprite();
+		}
+	}
+
+	private changeSprite() {
+		if (this._sprite) {
+			// remove sprite first
+			this._sprite.destroy();
+		}
     this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
     if (this._sprite.width && this._sprite.height) {
       this._sprite.setDisplaySize(this.width, this.height);
@@ -98,6 +108,11 @@ export class SpriteRole extends PhaserRole {
 
     this.destX = this.node.data('x');
     this.destY = this.node.data('y');
+	}
+
+  changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
+    console.log('Changed phaser scene: adding');
+		this.changeSprite();
   }
 
   addedToNode(node: DataNode): void {
