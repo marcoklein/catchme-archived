@@ -96,12 +96,15 @@ export class SpriteRole extends PhaserRole {
 		}
 	}
 
+	/**
+	 * Changes this sprite texture by first recreating the sprite (destroy and create).
+	 */
 	private changeSprite() {
 		if (this._sprite) {
 			// remove sprite first
 			this._sprite.destroy();
 		}
-    this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('image'));
+    this._sprite = this._scene.add.sprite(this.node.data('x'), this.node.data('y'), this.node.data('texture'));
     if (this._sprite.width && this._sprite.height) {
       this._sprite.setDisplaySize(this.width, this.height);
     }

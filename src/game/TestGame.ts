@@ -1,12 +1,12 @@
 import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain";
-import { PlayerEntity, Entity } from "./Entities";
+import { PlayerEntity, ServerEntities } from "./ServerEntities";
 import { HostedConnection } from "../server/ServerNetworkController";
 import { UserActions } from "../engine/Network";
 import { PhysicsRole } from "../server/ServerRoles";
 import Matter = require("matter-js");
 
 
-export class SimpleCatchme implements GameMode {
+export class TestGame implements GameMode {
 
   protected game: ServerGameInterface;
   protected helper: GameHelper;
@@ -57,7 +57,7 @@ export class SimpleCatchme implements GameMode {
     player.y = 300;
     player.radius = 30;
     player.speed = 5;
-    player.image = 'characterBlue';
+    player.texture = 'characterBlue';
 
     this.game.world.addEntity(player);
 
@@ -66,7 +66,7 @@ export class SimpleCatchme implements GameMode {
     this.players[client.id] = player;
 
 
-		player.image = 'test-sprite';
+		player.texture = 'test-sprite';
 
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)
