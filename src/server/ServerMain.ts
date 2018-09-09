@@ -21,6 +21,8 @@ export interface GameMode {
   clientJoined(client: HostedConnection): void;
   clientLeft(client: HostedConnection): void;
 
+
+
   // TODO add collision detection from https://github.com/dxu/matter-collision-events
 
 }
@@ -107,6 +109,13 @@ export class ServerGame implements ServerGameInterface {
     // init world and network
     this.world = new ServerWorld();
     this.network = new ServerNetworkController(4681, this);
+
+		// listen for collisions
+		Matter.Events.on(this.engine, 'collisionStart', (pairs: Matter.IPair[]) => {
+			/*pairs.forEach((pair: Matter.IPair) => {
+				// TODO detect collision
+			});*/
+		});
 
     // listen to update events and update
     let lastTimestamp = 0;
