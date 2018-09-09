@@ -124,18 +124,15 @@ export class SpriteRole extends PhaserRole {
 			// remove particle manager first
 			this._particles.destroy();
 		}
-		if (this._emitter) {
-			this._emitter.destroy();
-		}
 		// if particles are defined, create them
 		let particles = this.node.data('particles');
 		if (particles) {
 			this._particles = this._scene.add.particles(particles);
 			this._emitter = this._particles.createEmitter({});
-			emitter.setPosition(this.destX, this.destY);
-			emitter.setSpeed(200);
-			emitter.setLifespan(200);
-			emitter.setBlendMode(Phaser.BlendModes.ADD);
+			this._emitter.setPosition(this.destX, this.destY);
+			this._emitter.setSpeed(200);
+			this._emitter.setLifespan(200);
+			this._emitter.setBlendMode(Phaser.BlendModes.ADD);
 		}
 	}
 
@@ -206,6 +203,9 @@ export class SpriteRole extends PhaserRole {
 
 
   updateRole(delta: number, node: DataNode): void {
+		if (this._emitter) {
+			this._emitter.setPosition(this.node.data('x'), this.node.data('y'));
+		}
     if (this._sprite) {
       // test if node position has changed
       if (this.destX !== this.node.data('x') || this.destY !== this.node.data('y')) {
