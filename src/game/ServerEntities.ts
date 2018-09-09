@@ -8,7 +8,7 @@ import { PhysicsRole, MatterCircleBody, ShakyRole } from "../server/ServerRoles"
  *
  * If a new Entity is added on the server an according ClientEntityProducer has to be added to the client!
  */
-export abstract class ServerEntities extends DataNode {
+export abstract class Entity extends DataNode {
 
   constructor(type: string) {
     super();
@@ -29,7 +29,7 @@ export abstract class ServerEntities extends DataNode {
 
 }
 
-export abstract class PhysicsEntity extends ServerEntities {
+export abstract class PhysicsEntity extends Entity {
 
 
   set x(x) {
@@ -78,6 +78,14 @@ export class PlayerEntity extends PhysicsEntity {
   get texture() {
     return this.data('texture');
   }
+
+	set particles(particles) {
+		this.data('particles', particles);
+	}
+
+	get particles() {
+		return this.data('particles');
+	}
 
   set radius(radius) {
     this.data('radius', radius);

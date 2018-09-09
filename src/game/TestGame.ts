@@ -1,5 +1,5 @@
 import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain";
-import { PlayerEntity, ServerEntities } from "./ServerEntities";
+import { PlayerEntity, Entity } from "./ServerEntities";
 import { HostedConnection } from "../server/ServerNetworkController";
 import { UserActions } from "../engine/Network";
 import { PhysicsRole } from "../server/ServerRoles";
@@ -66,7 +66,8 @@ export class TestGame implements GameMode {
     this.players[client.id] = player;
 
 
-		player.texture = 'test-sprite';
+		player.texture = 'characterBlue';
+		player.particles = 'particle-catcher';
 
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)

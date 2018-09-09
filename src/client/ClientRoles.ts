@@ -36,6 +36,7 @@ export abstract class PhaserRole implements Role {
 
 /**
  * Used to hold a Phaser Sprite that is used for rendering.
+ * TODO create separate roles for PhaserGame Object (that has a position) and particles and sprites..
  */
 export class SpriteRole extends PhaserRole {
   scene: Phaser.Scene;
@@ -54,6 +55,8 @@ export class SpriteRole extends PhaserRole {
 
 
   private _sprite: GameObjects.Sprite;
+	private _particles: GameObjects.Particles.ParticleEmitterManager;
+	private _emitter: GameObjects.Particles.ParticleEmitter;
 
 
   constructor(initX?: number, initY?: number, initImage?: string) {
@@ -91,8 +94,11 @@ export class SpriteRole extends PhaserRole {
 
 	nodeDataUpdated(key: string, value: any, oldValue: any, node: DataNode) {
 		// update sprite texture if image changed
-		if (key === 'image') {
+		if (key === 'texture') {
 			this.changeSprite();
+		}
+		if (key === 'particles') {
+			this.changeParticleEffect();
 		}
 	}
 
@@ -113,9 +119,30 @@ export class SpriteRole extends PhaserRole {
     this.destY = this.node.data('y');
 	}
 
+	private changeParticleEffect() {
+		if (this._particles) {
+			// remove particle manager first
+			this._particles.destroy();
+		}
+		if (this._emitter) {
+			this._emitter.destroy();
+		}
+		// if particles are defined, create them
+		let particles = this.node.data('particles');
+		if (particles) {
+			this._particles = this._scene.add.particles(particles);
+			this._emitter = this._particles.createEmitter({});
+			emitter.setPosition(this.destX, this.destY);
+			emitter.setSpeed(200);
+			emitter.setLifespan(200);
+			emitter.setBlendMode(Phaser.BlendModes.ADD);
+		}
+	}
+
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
 		this.changeSprite();
+		this.changeParticleEffect();
   }
 
   addedToNode(node: DataNode): void {
