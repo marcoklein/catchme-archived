@@ -24,7 +24,7 @@ export interface GameMode {
 
 
   // TODO add collision detection from https://github.com/dxu/matter-collision-events
-
+	collisionStart(entityA: DataNode, entityB: DataNode): void;
 }
 
 export class GameHelper {
@@ -111,10 +111,18 @@ export class ServerGame implements ServerGameInterface {
     this.network = new ServerNetworkController(4681, this);
 
 		// listen for collisions
-		Matter.Events.on(this.engine, 'collisionStart', (pairs: Matter.IPair[]) => {
-			/*pairs.forEach((pair: Matter.IPair) => {
-				// TODO detect collision
-			});*/
+		Matter.Events.on(this.engine, 'collisionStart', (event: {pairs: Matter.IPair[]}) => {
+			console.log(event.pairs);
+			event.pairs.forEach((pair: Matter.IPair) => {
+				// handle collision
+				// find entities
+				let entityA = this.world.getEntityById(pair.bodyA.label);
+				let entityB = this.world.getEntityById(pair.bodyB.label);
+				// collision may happen between only physical entities like the boundary
+				if (entityA && entityB) {
+					this.mode.collisionStart(entityA, entityB);
+				}
+			});
 		});
 
     // listen to update events and update

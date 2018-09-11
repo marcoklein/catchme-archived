@@ -61,6 +61,7 @@ export abstract class PhysicsRole extends MatterRole {
   engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
     console.log('updating engine');
     this.body = this.createBody(this.x, this.y, engine);
+		this.body.label = this.node.data('id');
     Matter.World.add(engine.world, this.body);
     // set initial position
     this.node.data('x', this.x);

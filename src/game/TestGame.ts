@@ -2,6 +2,7 @@ import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain"
 import { PlayerEntity, Entity } from "./ServerEntities";
 import { HostedConnection } from "../server/ServerNetworkController";
 import { UserActions } from "../engine/Network";
+import { DataNode } from "../engine/Dataframework";
 import { PhysicsRole } from "../server/ServerRoles";
 import Matter = require("matter-js");
 
@@ -12,6 +13,8 @@ export class TestGame implements GameMode {
   protected helper: GameHelper;
 
   protected players: {[clientId: string]: PlayerEntity} = {};
+
+	protected somebodyIsCatcher: boolean = false;
 
   startGame(game: ServerGameInterface): void {
     this.game = game;
@@ -67,7 +70,11 @@ export class TestGame implements GameMode {
 
 
 		player.texture = 'characterBlue';
-		player.particles = 'particle-catcher';
+
+		if (!this.somebodyIsCatcher) {
+			this.somebodyIsCatcher = true;
+			player.particles = 'particle-catcher';
+		}
 
     // TODO tell client, that he can control this entity
     // (use client.setEntityId()?)
@@ -77,6 +84,16 @@ export class TestGame implements GameMode {
     console.log('player rage quit!');
   }
 
+	collisionStart(entityA: DataNode, entityB: DataNode): void {
+		// for testing, there are only players
+		if (entityA.data('particles')) {
+			entityB.data('particles', entityA.data('particles'));
+			entityA.data('particles', undefined);
+		} else if (entityB.data('particles')) {
+			entityA.data('particles', entityB.data('particles'));
+			entityB.data('particles', undefined);
+		}
+	}
 
 
 
