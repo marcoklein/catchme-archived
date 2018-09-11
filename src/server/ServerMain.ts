@@ -112,7 +112,6 @@ export class ServerGame implements ServerGameInterface {
 
 		// listen for collisions
 		Matter.Events.on(this.engine, 'collisionStart', (event: {pairs: Matter.IPair[]}) => {
-			console.log(event.pairs);
 			event.pairs.forEach((pair: Matter.IPair) => {
 				// handle collision
 				// find entities
