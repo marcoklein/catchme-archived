@@ -6,7 +6,7 @@ export abstract class MatterRole implements Role {
   id: string;
   node: DataNode;
 
-  abstract get name(): string;
+  abstract get roleName(): string;
 
   private _engine: Matter.Engine;
 
@@ -101,7 +101,7 @@ export class MatterCircleBody extends PhysicsRole {
     return this.node.data('radius');
   }
 
-  get name() {
+  get roleName() {
     return 'MatterCircleBody';
   }
 
@@ -129,7 +129,7 @@ export class ShakyRole implements Role {
   moveTime: number = 0;
   maxMoveTime: number = 2000;
 
-  get name() {
+  get roleName() {
     return 'ShakyRole';
   }
 

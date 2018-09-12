@@ -1,5 +1,5 @@
 import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain";
-import { PlayerEntity, Entity } from "./ServerEntities";
+import { PlayerRole, EntityRole } from "./ServerEntities";
 import { HostedConnection } from "../server/ServerNetworkController";
 import { UserActions } from "../engine/Network";
 import { DataNode } from "../engine/Dataframework";
@@ -12,7 +12,7 @@ export class TestGame implements GameMode {
   protected game: ServerGameInterface;
   protected helper: GameHelper;
 
-  protected players: {[clientId: string]: PlayerEntity} = {};
+  protected players: {[clientId: string]: PlayerRole} = {};
 
 	protected somebodyIsCatcher: boolean = false;
 
@@ -31,9 +31,9 @@ export class TestGame implements GameMode {
       this.forceTimer = this.forceInterval;
       console.log('applying force');
       for (let key in this.players) {
-        let player: PlayerEntity = this.players[key];
+        let player: PlayerRole = this.players[key];
         // apply force to players every 2 seconds
-        let body = (<PhysicsRole>player.getRoleByClass(PhysicsRole)).body;
+        let body = (<PhysicsRole>player.node.getRoleByClass(PhysicsRole)).body;
         Matter.Body.applyForce(body, Matter.Vector.create(body.position.x, body.position.y), Matter.Vector.create(Math.random() * 0.1, Math.random() * 0.1));
       }
     }
@@ -45,7 +45,7 @@ export class TestGame implements GameMode {
   userActions(client: HostedConnection, actions: UserActions) {
     // apply move direction
     if (actions.mX !== undefined && actions.mY !== undefined) {
-      let player = (<PlayerEntity>this.game.world.getEntityById(client.entityId));
+      let player: PlayerRole = this.game.world.getEntityById(client.entityId).getRoleByClass(PlayerRole);
       player.setMoveDirection(actions.mX, actions.mY);
     }
   }
@@ -54,7 +54,7 @@ export class TestGame implements GameMode {
     console.log('client joined the dark side!');
 
     // send new player
-    let player = new PlayerEntity();
+    let player = new PlayerRole();
     player.name = client.name;
     player.x = Math.random() * 100;
     player.y = 300;
@@ -62,9 +62,10 @@ export class TestGame implements GameMode {
     player.speed = 5;
     player.texture = 'characterBlue';
 
-    this.game.world.addEntity(player);
 
-    client.entityId = player.id;
+    this.game.world.addEntity(player.node);
+
+    client.entityId = player.entityId;
 
     this.players[client.id] = player;
 

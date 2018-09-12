@@ -11,7 +11,7 @@
  * that has to be set in the constructor.
  */
 export interface Role {
-  readonly name: string;
+  readonly roleName: string;
   node: DataNode;
   id: string;
 
@@ -20,6 +20,29 @@ export interface Role {
   updateRole(delta: number, node: DataNode): void;
 
 	nodeDataUpdated?(key: string, newValue: any, oldValue: any, node: DataNode): void;
+}
+
+export abstract class AbstractRole implements Role {
+  readonly roleName: string;
+  node: DataNode;
+  id: string;
+
+
+  /**
+   * Used to access data. data(key) will get data and data(key, value) sets data.
+   */
+  data<T>(key?: string, value?: Object): {[key: string]: Object} | any | T {
+		return this.node.data(key, value);
+	}
+
+  addedToNode(node: DataNode) {
+	}
+  removedFromNode(node: DataNode) {
+	}
+  updateRole(delta: number, node: DataNode) {
+	}
+	nodeDataUpdated?(key: string, newValue: any, oldValue: any, node: DataNode) {
+	}
 }
 
 /**
@@ -170,7 +193,7 @@ export class DataNode {
    * @param role Role to add.
    */
   addRole(role: Role) {
-    let name = role.name;
+    let name = role.roleName;
     if (name === undefined || name === null || name.trim() === '') {
       throw new Error('Role has no name.');
     }
@@ -187,11 +210,11 @@ export class DataNode {
     this.roleArray.push(role);
 
     // name array of role exists?
-    let nameRoleArray = this.rolesByName[role.name];
+    let nameRoleArray = this.rolesByName[role.roleName];
     if (nameRoleArray !== undefined) {
       nameRoleArray.push(role);
     } else {
-      this.rolesByName[role.name] = [role];
+      this.rolesByName[role.roleName] = [role];
     }
 
     // store node in role

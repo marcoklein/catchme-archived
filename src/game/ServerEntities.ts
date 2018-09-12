@@ -1,4 +1,4 @@
-import { DataNode, Role } from "../engine/Dataframework";
+import { DataNode, Role, AbstractRole } from "../engine/Dataframework";
 import { PhysicsRole, MatterCircleBody, ShakyRole } from "../server/ServerRoles";
 
 
@@ -8,12 +8,32 @@ import { PhysicsRole, MatterCircleBody, ShakyRole } from "../server/ServerRoles"
  *
  * If a new Entity is added on the server an according ClientEntityProducer has to be added to the client!
  */
-export abstract class Entity extends DataNode {
+export abstract class EntityRole extends AbstractRole {
 
-  constructor(type: string) {
-    super();
-    this.type = type;
+	node: DataNode;
+
+
+	get roleName() {
+		return 'Entity';
+	}
+
+  constructor() {
+		super();
+		let node = new DataNode();
+		node.addRole(this);
   }
+
+	addedToNode(node: DataNode) {
+		super.addedToNode(node);
+		// initialize
+		this.type = this.getType();
+	}
+
+	removedFromNode(node: DataNode) {
+		super.removedFromNode(node);
+	}
+
+	abstract getType(): string;
 
   set type(type) {
     this.data('type', type);
@@ -23,13 +43,21 @@ export abstract class Entity extends DataNode {
     return this.data('type');
   }
 
-  get id() {
-    return this.data('id');
+	set entityId(id) {
+		this.data('id', id);
+	}
+
+  get entityId() {
+		if (this.node) {
+			return this.data('id');
+		} else {
+			return undefined;
+		}
   }
 
 }
 
-export abstract class PhysicsEntity extends Entity {
+export abstract class PhysicsEntity extends EntityRole {
 
 
   set x(x) {
@@ -49,19 +77,32 @@ export abstract class PhysicsEntity extends Entity {
   }
 }
 
-export class PlayerEntity extends PhysicsEntity {
+export class PlayerRole extends PhysicsEntity {
   static TYPE: string = 'player';
   private _physicsRole: PhysicsRole;
 
   constructor() {
-    super('player');
-
-    this.name = this.name || '<unnamed>';
-
-    this._physicsRole = new MatterCircleBody();
-    this.addRole(this._physicsRole);
-    //this.addRole(new ShakyRole());
+    super();
   }
+
+	getType() {
+		return 'Player';
+	}
+
+
+	addedToNode(node: DataNode) {
+		super.addedToNode(node);
+		// initialize
+    this.name = this.name || '<unnamed>';
+    this._physicsRole = new MatterCircleBody();
+    this.node.addRole(this._physicsRole);
+	}
+
+	removedFromNode(node: DataNode) {
+		super.removedFromNode(node);
+		// cleanup
+		this.node.removeRole(this._physicsRole);
+	}
 
   set name(name) {
     this.data('name', name);
@@ -106,14 +147,5 @@ export class PlayerEntity extends PhysicsEntity {
   setMoveDirection(x: number, y: number) {
     this._physicsRole.setMoveDirection(x, y);
   }
-
-  /*
-  set asdf(asdf) {
-    this.data('asdf', asdf);
-  }
-
-  get asdf() {
-    return this.data('asdf');
-  }*/
 
 }

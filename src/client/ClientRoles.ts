@@ -9,7 +9,7 @@ export abstract class PhaserRole implements Role {
 
   id: string;
   node: DataNode;
-  name: string;
+  roleName: string;
 
   protected _scene: Phaser.Scene;
 
@@ -49,7 +49,7 @@ export class SpriteRole extends PhaserRole {
 
 
   id: string;
-  name: string = 'Sprite';
+  roleName: string = 'Sprite';
 
   node: DataNode;
 
@@ -244,7 +244,7 @@ export class PlayerControl extends PhaserRole {
 
   id: string;
   node: DataNode;
-  name: string = 'Player';
+  roleName: string = 'Player';
 
   upKey: Phaser.Input.Keyboard.Key;
   leftKey: Phaser.Input.Keyboard.Key;

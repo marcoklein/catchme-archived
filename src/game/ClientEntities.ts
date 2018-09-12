@@ -5,7 +5,7 @@ import * as ClientRoles from '../client/ClientRoles';
 
 export const CLIENT_ENTITY_PRODUCERS: ClientEntityProducer[] = [
   {
-    type: 'player',
+    type: 'Player',
     produceClientEntity(node: DataNode): DataNode {
       let data = node.data();
       node.addRole(new ClientRoles.PlayerControl());
