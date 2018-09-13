@@ -37,6 +37,24 @@ export class ClientMain extends Phaser.Game {
 
   }
 
+	create() {
+		// resize screen size
+		//window.addEventListener('resize', this.resize);
+		//this.resize();
+	}
+
+	resize() {
+		var canvas = this.canvas, width = window.innerWidth, height = window.innerHeight;
+		var wratio = width / height, ratio = canvas.width / canvas.height;
+
+		if (wratio < ratio) {
+			canvas.style.width = width + "px";
+			canvas.style.height = (width / ratio) + "px";
+		} else {
+			canvas.style.width = (height * ratio) + "px";
+			canvas.style.height = height + "px";
+		}
+	}
 
 }
 
