@@ -1,6 +1,35 @@
-import { DataNode, Role } from "../engine/Dataframework";
+import { DataNode, Role, AbstractRole } from "../engine/Dataframework";
 import * as Matter from 'matter-js'
 
+/* Util Roles */
+/**
+ * Removes itself after a certain amount of time.
+ */
+export abstract class TimedRole extends AbstractRole {
+
+	remainingTime: number;
+	totalTime: number;
+
+	constructor(totalTime?: number) {
+    super();
+		this.totalTime = totalTime;
+	}
+
+	addedToNode(node: DataNode) {
+		this.remainingTime = this.totalTime;
+	}
+
+	updateRole(delta: number, node: DataNode) {
+		if (this.remainingTime <= 0) {
+			// destroy data node
+			this.node.removeRole(this); // TODO add Role.removeFromParent()
+		}
+		this.remainingTime -= delta;
+	}
+
+}
+
+/* Physics Roles */
 export abstract class MatterRole implements Role {
 
   id: string;
