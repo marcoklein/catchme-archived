@@ -41,7 +41,7 @@ export abstract class AbstractRole implements Role {
 	}
   updateRole(delta: number, node: DataNode) {
 	}
-	nodeDataUpdated?(key: string, newValue: any, oldValue: any, node: DataNode) {
+	nodeDataUpdated(key: string, newValue: any, oldValue: any, node: DataNode) {
 	}
 }
 
