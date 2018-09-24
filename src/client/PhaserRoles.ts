@@ -122,7 +122,6 @@ export class SpriteRole extends PhaserRole {
 	private changeParticleEffect() {
 		if (this._particles) {
 			// remove particle manager first
-			console.log('destroyed particles');
 			this._particles.destroy();
 		}
 		// if particles are defined, create them
