@@ -55,7 +55,7 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
     //var sprite = this.add.sprite(50, 300, 'test-sprite');
 
     this._world = new ClientWorld(this);
-    this._network = new ClientNetworkController('http://localhost:4681', this);
+    this._network = new ClientNetworkController('http://kleinprojects:4681', this);
     this._entityFactory = new ClientEntityFactory();
 
     // load entities
