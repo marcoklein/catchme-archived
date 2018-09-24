@@ -111,7 +111,7 @@ export abstract class World {
   }
 
   /**
-   * Generates a new unique id for a Role that is added to the DataNode.
+   * Generates a new unique id for a Node that is added to the DataNode.
    */
   private generateNewEntityId(): string {
     this.lastEntityId++;
