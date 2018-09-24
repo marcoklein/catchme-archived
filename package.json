@@ -1,6 +1,6 @@
 {
   "name": "catchme",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Tagging game based on Phaser.",
   "main": "index.js",
   "scripts": {
