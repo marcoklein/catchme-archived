@@ -17,7 +17,8 @@
 		"build": "npm run build-server && npm run build-client",
 		"build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server-live\"",
     "build:server:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-server-live\"",
-		"build:client:live": "webpack -p -w"
+		"build:client:live": "webpack -p -w",
+		"test": "exit 0"
   },
   "keywords": [
     "CatchMe",
