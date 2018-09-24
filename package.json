@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
 		"start": "node dist/server/index.js",
-		"postinstall": "cd public & npm i --production",
+		"postinstall": "npm run build & cd public & npm i --production",
     "test-watch": "mocha --watch",
     "build-server": "tsc --build tsconfig.json",
     "build-client-ts": "tsc --build tsconfig-client.json",
