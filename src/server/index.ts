@@ -16,13 +16,13 @@ let game = new ServerGame();
 const app = Express();
 
 // use public from cmd dir
-app.use(Express.static(Path.join('', 'public')));
+app.use(Express.static(Path.join(__dirname, '../../public')));
 
-app.use(function(req: any, res: any, next: any) {
+/*app.use(function(req: any, res: any, next: any) {
   // link not found
   res.status(200).sendFile(__dirname + "/public/index.html");
   next();
-});
+});*/
 
 // start express on different port then socket.io
 app.listen(4680, function() {
