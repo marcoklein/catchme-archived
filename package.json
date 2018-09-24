@@ -14,7 +14,8 @@
     "watch-all": "nodemon -w \"src/**/*\" -e \"ts\" --exec \"tsc --build tsconfig.json & npm build-client & node built/\"",
     "old-build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server & node built/\"",
     "build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server-live\"",
-    "build:server:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-server-live\""
+    "build:server:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-server-live\"",
+		"build:client:live": "webpack -p -w"
   },
   "keywords": [
     "CatchMe",

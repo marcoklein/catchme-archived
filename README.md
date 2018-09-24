@@ -11,6 +11,8 @@ Changes are not sent directly after they happend but rather cached to not overlo
 
 ## Interpolation
 
+# Design
+Colors from http://clrs.cc/.
 
 # Development
 
