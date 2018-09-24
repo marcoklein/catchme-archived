@@ -6,7 +6,7 @@ import * as Express from 'express';
 import * as Path from 'path';
 
 import { ServerGame } from './ServerMain';
-import { TestGame } from '../game/TestGame';
+import { TestGame } from '../game/basic/ClassicGame';
 
 
 let game = new ServerGame();

@@ -1,0 +1,3 @@
+# Classic Catchme
+The classic catchme game has only two entities: players and obstacles.
+One player is always a catcher who has to catch another player. If the other player has been caught he has to catch the other player again...

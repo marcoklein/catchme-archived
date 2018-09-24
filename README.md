@@ -1,4 +1,34 @@
 
+# Usage
+Install everything (including /public folder).
+```bash
+npm install
+```
+Run for live deployment of server and client.
+Client files are packed into the /public folder.
+```bash
+npm run build:live
+```
+Build server and client.
+```bash
+npm run build
+```
+Start server (server hosts /public folder).
+```bash
+npm start
+```
+
+## Project Structure
+```bash
+- devDependencies # typescript dependencies
+- public   # public available files
+- src
+  - client # client related logic
+	- engine # basic game engine shared among server and client
+	- game   # actual game
+	- server # server logic
+```
+W
 
 
 # Server

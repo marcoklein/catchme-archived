@@ -49,8 +49,8 @@ export abstract class AbstractRole implements Role {
  * Listener gets informed about DataNode events.
  */
 export interface DataNodeListener {
-  addedRoleToNode(role: Role, node: DataNode): void;
-  dataUpdated(key: string, newValue: any, oldValue: any, node: DataNode): void;
+  addedRoleToNode?(role: Role, node: DataNode): void;
+  dataUpdated?(key: string, newValue: any, oldValue: any, node: DataNode): void;
   //dataDeleted(key: string, node: DataNode): void;
 }
 
@@ -96,7 +96,9 @@ export class DataNode {
 			});
 			// notify listeners
       this.listeners.forEach(listener => {
-        listener.dataUpdated(key, value, oldValue, this);
+				if (listener.dataUpdated) {
+	        listener.dataUpdated(key, value, oldValue, this);
+				}
       });
     }
   }
@@ -224,7 +226,9 @@ export class DataNode {
 
     // notify listeners
     this.listeners.forEach(listener => {
-      listener.addedRoleToNode(role, this);
+			if (listener.addedRoleToNode) {
+	      listener.addedRoleToNode(role, this);
+			}
     });
 
     return roleId;

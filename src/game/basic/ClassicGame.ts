@@ -1,9 +1,9 @@
-import { GameMode, ServerGameInterface, GameHelper } from "../server/ServerMain";
+import { GameMode, ServerGameInterface, GameHelper } from "../../server/ServerMain";
 import { PlayerRole, EntityRole } from "./ServerEntities";
-import { HostedConnection } from "../server/ServerNetworkController";
-import { UserActions } from "../engine/Network";
-import { DataNode } from "../engine/Dataframework";
-import { PhysicsRole } from "../server/ServerRoles";
+import { HostedConnection } from "../../server/ServerNetworkController";
+import { UserActions } from "../../engine/Network";
+import { DataNode } from "../../engine/Dataframework";
+import { PhysicsRole } from "../../server/PhysicsRoles";
 import Matter = require("matter-js");
 
 
@@ -14,7 +14,7 @@ export class TestGame implements GameMode {
 
   protected players: {[clientId: string]: PlayerRole} = {};
 
-	protected somebodyIsCatcher: boolean = false;
+	protected somebodyIsHunter: boolean = false;
 
   startGame(game: ServerGameInterface): void {
     this.game = game;
@@ -72,9 +72,9 @@ export class TestGame implements GameMode {
 
 		player.texture = 'characterBlue';
 
-		if (!this.somebodyIsCatcher) {
-			this.somebodyIsCatcher = true;
-			player.particles = 'particle-catcher';
+		if (!this.somebodyIsHunter) {
+			this.somebodyIsHunter = true;
+			player.isHunter = true;
 		}
 
     // TODO tell client, that he can control this entity
@@ -86,13 +86,22 @@ export class TestGame implements GameMode {
   }
 
 	collisionStart(entityA: DataNode, entityB: DataNode): void {
-		// for testing, there are only players
-		if (entityA.data('particles')) {
-			entityB.data('particles', entityA.data('particles'));
-			entityA.data('particles', undefined);
-		} else if (entityB.data('particles')) {
-			entityA.data('particles', entityB.data('particles'));
-			entityB.data('particles', undefined);
+		let playerA: PlayerRole = entityA.getRoleByClass(PlayerRole);
+		let playerB: PlayerRole = entityB.getRoleByClass(PlayerRole);
+		// check only collision between two players
+		if (playerA && playerB) {
+			this.handlePlayerCollision(playerA, playerB);
+		}
+
+	}
+
+	handlePlayerCollision(playerA: PlayerRole, playerB: PlayerRole) {
+		if (playerA.isHunter && !playerB.isHunter) {
+			playerB.isHunter = true;
+			playerA.isHunter = false;
+		} else if (!playerA.isHunter && playerB.isHunter) {
+			playerB.isHunter = false;
+			playerA.isHunter = true;
 		}
 	}
 

@@ -2,7 +2,6 @@ import * as SocketIOClient from 'socket.io-client';
 import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { World, WorldController, WorldListener } from '../engine/World';
 import { ClientGameInterface } from './ClientMain';
-import { PlayerControl } from './ClientRoles';
 import { DataNode } from '../engine/Dataframework';
 
 export class ClientNetworkController extends NetworkController implements WorldController {
@@ -20,7 +19,6 @@ export class ClientNetworkController extends NetworkController implements WorldC
   private cachedChanges: WorldChanges[] = [];
 
   // to sync player movement
-  private playerControl: PlayerControl;
   private lastMoveDir: Phaser.Math.Vector2 = new Phaser.Math.Vector2();
 
   game: ClientGameInterface;
@@ -78,12 +76,12 @@ export class ClientNetworkController extends NetworkController implements WorldC
 
   update(delta: number) {
     // sync player movement
-    let moveDir = this.playerControl.moveDirection;
+    /*let moveDir = this.playerControl.moveDirection;
     if (!moveDir.equals(this.lastMoveDir)) {
       this.lastMoveDir.set(moveDir.x, moveDir.y);
       // send move direction
       this.socket.emit('player-update', { moveDir: moveDir });
-    }
+    }*/
   }
 
   cleanup(world: World) {

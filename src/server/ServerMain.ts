@@ -7,7 +7,7 @@ import { ServerWorld } from './ServerWorld';
 import { ServerNetworkController, HostedConnection } from './ServerNetworkController';
 import { WorldListener } from '../engine/World';
 import { DataNode } from '../engine/Dataframework';
-import { MatterRole } from './ServerRoles';
+import { MatterRole } from './PhysicsRoles';
 import { UserActions } from '../engine/Network';
 
 export interface GameMode {

@@ -1,10 +1,8 @@
 import * as SocketIO from 'socket.io';
-import * as Matter from 'matter-js'
 import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
 import { DataNode, DataNodeListener, Role } from '../engine/Dataframework';
-import { PhysicsRole } from './ServerRoles';
 
 
 export class HostedConnection {

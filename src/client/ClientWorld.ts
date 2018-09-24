@@ -1,6 +1,6 @@
 import { World } from '../engine/World'
 import { DataNode } from '../engine/Dataframework'
-import { PhaserRole } from './ClientRoles';
+import { PhaserRole } from './PhaserRoles';
 
 /**
  * Extends basic World with client specific behaviors and properties.

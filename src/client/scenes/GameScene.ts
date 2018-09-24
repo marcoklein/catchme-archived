@@ -5,7 +5,7 @@ import { ClientGameInterface } from '../ClientMain';
 import { ClientWorld } from '../ClientWorld';
 import { ClientNetworkController } from '../ClientNetworkController';
 import { ClientEntityFactory, ClientEntityProducer } from '../ClientEntityFactory';
-import { CLIENT_ENTITY_PRODUCERS } from '../../game/ClientEntities';
+import { CLIENT_ENTITY_PRODUCERS } from '../../game/basic/ClientEntities';
 
 /** Test Scene */
 export class GameScene extends Phaser.Scene implements ClientGameInterface {

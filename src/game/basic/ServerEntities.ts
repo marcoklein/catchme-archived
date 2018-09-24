@@ -1,5 +1,5 @@
-import { DataNode, Role, AbstractRole } from "../engine/Dataframework";
-import { PhysicsRole, MatterCircleBody, ShakyRole } from "../server/ServerRoles";
+import { DataNode, Role, AbstractRole } from "../../engine/Dataframework";
+import { PhysicsRole, MatterCircleBody } from "../../server/PhysicsRoles";
 
 
 /**
@@ -77,6 +77,9 @@ export abstract class PhysicsEntity extends EntityRole {
   }
 }
 
+/**
+ * A player can be a hunter or not.
+ */
 export class PlayerRole extends PhysicsEntity {
   static TYPE: string = 'player';
   private _physicsRole: PhysicsRole;
@@ -120,12 +123,12 @@ export class PlayerRole extends PhysicsEntity {
     return this.data('texture');
   }
 
-	set particles(particles) {
-		this.data('particles', particles);
+	set isHunter(isHunter: boolean) {
+		this.data('isHunter', isHunter);
 	}
 
-	get particles() {
-		return this.data('particles');
+	get isHunter() {
+		return this.data('isHunter');
 	}
 
   set radius(radius) {
