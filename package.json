@@ -1,10 +1,10 @@
 {
   "name": "catchme",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Tagging game based on Phaser.",
   "main": "index.js",
   "scripts": {
-		"start": "node built/server/index.js",
+		"start": "node dist/server/index.js",
 		"postinstall": "cd public & npm i --production",
     "test-watch": "mocha --watch",
     "build-server": "tsc --build tsconfig.json",
@@ -14,7 +14,8 @@
     "old-build-client": "tsc --build tsconfig-client.json",
     "watch-all": "nodemon -w \"src/**/*\" -e \"ts\" --exec \"tsc --build tsconfig.json & npm build-client & node built/\"",
     "old-build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server & node built/\"",
-    "build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server-live\"",
+		"build": "npm run build-server && npm run build-client",
+		"build:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-client & npm run-script build-server-live\"",
     "build:server:live": "nodemon -w src/**/* -e ts --exec \"npm run-script build-server-live\"",
 		"build:client:live": "webpack -p -w"
   },
