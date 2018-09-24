@@ -99,9 +99,11 @@ export class TestGame implements GameMode {
 		if (playerA.isHunter && !playerB.isHunter) {
 			playerB.isHunter = true;
 			playerA.isHunter = false;
+			console.log('Player caught.');
 		} else if (!playerA.isHunter && playerB.isHunter) {
 			playerB.isHunter = false;
 			playerA.isHunter = true;
+			console.log('Player caught.');
 		}
 	}
 

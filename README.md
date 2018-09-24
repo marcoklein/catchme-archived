@@ -28,7 +28,7 @@ npm start
 	- game   # actual game
 	- server # server logic
 ```
-W
+
 
 
 # Server
