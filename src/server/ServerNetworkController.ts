@@ -1,4 +1,5 @@
 import * as SocketIO from 'socket.io';
+import * as http from 'http';
 import { NetworkController, Message, WorldChanges, UserActions } from '../engine/Network';
 import { WorldListener } from '../engine/World';
 import { ServerGameInterface } from './ServerMain';
@@ -97,13 +98,13 @@ export class ServerNetworkController extends NetworkController {
   worldSynchronizer: WorldSynchronizer = new WorldSynchronizer(this);
   game: ServerGameInterface;
 
-  constructor(port: number, game: ServerGameInterface) {
+  constructor(server: http.Server, game: ServerGameInterface) {
     super();
     if (game === undefined) {
       throw new Error('ServerNetworkController: game has to be defined.');
     }
     this.game = game;
-    this.io = SocketIO(port);
+    this.io = SocketIO(server);
     console.log('init server network');
 
 
@@ -114,7 +115,7 @@ export class ServerNetworkController extends NetworkController {
     this.initNodeDataChangeListener();
 
     //this.io.listen(port);
-    console.log('SocketIO listening on port %i', port);
+    //console.log('SocketIO listening on port %i', port);
   }
 
   sendWorldUpdate(changes: WorldChanges) {

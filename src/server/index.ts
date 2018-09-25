@@ -7,13 +7,17 @@ import * as Path from 'path';
 
 import { ServerGame } from './ServerMain';
 import { TestGame } from '../game/basic/ClassicGame';
-
-
-let game = new ServerGame();
+import * as http from 'http';
 
 
 // create express app
 const app = Express();
+
+let server = new http.Server(app);
+
+let game = new ServerGame(server);
+
+
 
 // use public from cmd dir
 app.use(Express.static(Path.join(__dirname, '../../public')));
@@ -25,7 +29,8 @@ app.use(Express.static(Path.join(__dirname, '../../public')));
 });*/
 
 // start express on different port then socket.io
-app.listen(4680, function() {
+server.listen(4680, function() {
   console.log('Listening on port 4680!');
-  game.start(new TestGame());
 });
+
+game.start(new TestGame());

@@ -7,6 +7,9 @@ import { ClientNetworkController } from '../ClientNetworkController';
 import { ClientEntityFactory, ClientEntityProducer } from '../ClientEntityFactory';
 import { CLIENT_ENTITY_PRODUCERS } from '../../game/basic/ClientEntities';
 
+declare var window: any;
+
+
 /** Test Scene */
 export class GameScene extends Phaser.Scene implements ClientGameInterface {
   private phaserSprite: Phaser.GameObjects.Sprite;
@@ -54,8 +57,11 @@ export class GameScene extends Phaser.Scene implements ClientGameInterface {
   create(): void {
     //var sprite = this.add.sprite(50, 300, 'test-sprite');
 
+
     this._world = new ClientWorld(this);
-    this._network = new ClientNetworkController('http://kleinprojects:4681', this);
+    let apiRoot = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+    console.log('api root is ' + apiRoot);
+    this._network = new ClientNetworkController(apiRoot, this);
     this._entityFactory = new ClientEntityFactory();
 
     // load entities

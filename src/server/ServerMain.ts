@@ -1,7 +1,8 @@
  // fix for matterjs -> accesses window variable
  (<any> global).window = {};
 
-import * as Matter from 'matter-js'
+import * as Matter from 'matter-js';
+import * as http from 'http';
 
 import { ServerWorld } from './ServerWorld';
 import { ServerNetworkController, HostedConnection } from './ServerNetworkController';
@@ -83,7 +84,10 @@ export class ServerGame implements ServerGameInterface {
   // physics
   engine: Matter.Engine;
 
-  constructor() {
+  server: http.Server;
+
+  constructor(server: http.Server) {
+    this.server = server;
   }
 
   start(gameMode: GameMode) {
@@ -108,7 +112,7 @@ export class ServerGame implements ServerGameInterface {
 
     // init world and network
     this.world = new ServerWorld();
-    this.network = new ServerNetworkController(4681, this);
+    this.network = new ServerNetworkController(this.server, this);
 
 		// listen for collisions
 		Matter.Events.on(this.engine, 'collisionStart', (event: {pairs: Matter.IPair[]}) => {
