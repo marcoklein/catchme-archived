@@ -126,7 +126,7 @@ export class SpriteRole extends PhaserRole {
 		}
 		// if particles are defined, create them
 		let particles = this.node.data('particles');
-		if (particles && this._scene) {
+		if (particles && this._scene !== undefined) {
 			this._particles = this._scene.add.particles(particles);
 			this._emitter = this._particles.createEmitter({});
 			this._emitter.setPosition(this.destX, this.destY);
@@ -138,6 +138,7 @@ export class SpriteRole extends PhaserRole {
 
   changedPhaserScene(scene: Phaser.Scene, oldScene?: Phaser.Scene): void {
     console.log('Changed phaser scene: adding');
+		this._scene = scene;
 		this.changeSprite();
 		this.changeParticleEffect();
   }
