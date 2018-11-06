@@ -88,16 +88,21 @@ export abstract class PhysicsRole extends MatterRole {
 
 
   engineUpdated(engine: Matter.Engine, oldEngine: Matter.Engine): void {
-    console.log('updating engine');
-    this.body = this.createBody(this.x, this.y, engine);
-		this.body.label = this.node.data('id');
-    Matter.World.add(engine.world, this.body);
-    // set initial position
-    this.node.data('x', this.x);
-    this.node.data('y', this.y);
-    // set default val
-    this.speed = this.speed || 1;
-    console.log('physics body created');
+		if (!engine && oldEngine) {
+			// setting engine to null -> remove body
+			Matter.World.remove(oldEngine.world, this.body);
+		} else if (engine) {
+	    console.log('updating engine');
+	    this.body = this.createBody(this.x, this.y, engine);
+			this.body.label = this.node.data('id');
+	    Matter.World.add(engine.world, this.body);
+	    // set initial position
+	    this.node.data('x', this.x);
+	    this.node.data('y', this.y);
+	    // set default val
+	    this.speed = this.speed || 1;
+	    console.log('physics body created');
+		}
   }
 
   abstract createBody(x: number, y: number, engine: Matter.Engine): Matter.Body

@@ -74,7 +74,7 @@ class WorldSynchronizer implements WorldListener, DataNodeListener {
   }
 
   entityRemoved(entity: DataNode) {
-    this.changes.removedEntitites.push(entity.data());
+    this.changes.removedEntitites.push(entity.data('id'));
     entity.removeListener(this);
   }
 
@@ -147,16 +147,18 @@ export class ServerNetworkController extends NetworkController {
         addedEntities: this.game.world.getEntitiesData()
       });
 
+      socket.on('disconnect', () => {
+        console.log('Client disconnected.');
+        delete this.clientsById[socket.id];
+        // delete player entity and tell game mode
+        this.game.mode.clientLeft(connection);
+      });
+
       // notify game mode about joined client
       this.game.mode.clientJoined(connection);
 
     });
 
-    socket.on('disconnect', () => {
-      console.log('Client disconnected.');
-      delete this.clientsById[socket.id];
-      // TODO delete player entity and tell game mode
-    });
   }
 
   private handlePlayerActions(socket: SocketIO.Socket, actions: UserActions) {

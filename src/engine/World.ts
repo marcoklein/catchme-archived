@@ -94,11 +94,21 @@ export abstract class World {
   }
 
   removeEntityById(id: string) {
-    this.removeEntity(null);
+    this.removeEntity(this.getEntityById(id));
   }
 
   removeEntity(entity: DataNode) {
-    throw new Error('Function not implemented yet.');
+    this._entities.splice(this._entities.indexOf(entity), 1);
+    delete this._entitiesById[entity.data('id')];
+
+    // notify Listeners
+    this._listeners.forEach(listener => {
+      if (listener) {
+        listener.entityRemoved(entity);
+      }
+    });
+
+    this.entityRemoved(entity);
   }
 
   update(delta: number) {

@@ -111,6 +111,7 @@ export class ClientNetworkController extends NetworkController implements WorldC
     // remove entities at the end because data changes might affect removed entities
     if (changes.removedEntitites) {
       changes.removedEntitites.forEach(id => {
+        console.log('Removing entity with id: ', id);
         world.removeEntityById(id);
       });
     }

@@ -172,6 +172,11 @@ export class ServerGame implements ServerGameInterface {
         entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
           role.engine = self.engine;
         });
+      },
+      entityRemoved(entity: DataNode) {
+        entity.getRolesByClass(MatterRole).forEach((role: MatterRole) => {
+          role.engine = null;
+        });
       }
     });
   }

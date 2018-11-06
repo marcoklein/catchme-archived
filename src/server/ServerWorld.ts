@@ -15,6 +15,5 @@ export class ServerWorld extends World {
   }
 
   entityRemoved(entity: DataNode): void {
-    throw new Error("Method not implemented.");
   }
 }

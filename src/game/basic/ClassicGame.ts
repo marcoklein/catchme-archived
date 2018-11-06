@@ -27,7 +27,8 @@ export class TestGame implements GameMode {
   forceInterval: number = 10000;
   update(delta: number): void {
     this.forceTimer -= delta;
-    if (this.forceTimer < 0) {
+    // apply a random force
+    /*if (this.forceTimer < 0) {
       this.forceTimer = this.forceInterval;
       console.log('applying force');
       for (let key in this.players) {
@@ -36,7 +37,7 @@ export class TestGame implements GameMode {
         let body = (<PhysicsRole>player.node.getRoleByClass(PhysicsRole)).body;
         Matter.Body.applyForce(body, Matter.Vector.create(body.position.x, body.position.y), Matter.Vector.create(Math.random() * 0.1, Math.random() * 0.1));
       }
-    }
+    }*/
   }
 
   finishGame(): void {
@@ -76,13 +77,15 @@ export class TestGame implements GameMode {
 			this.somebodyIsHunter = true;
 			player.isHunter = true;
 		}
-
-    // TODO tell client, that he can control this entity
-    // (use client.setEntityId()?)
   }
 
   clientLeft(client: HostedConnection): void {
     console.log('player rage quit!');
+
+    // extract client player entity
+    let player = this.players[client.id];
+    // remove player
+    this.game.world.removeEntity(player.node);
   }
 
 	collisionStart(entityA: DataNode, entityB: DataNode): void {
